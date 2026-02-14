@@ -52,15 +52,13 @@ public class Code {
         for (char c : input.toCharArray()) {
           array[c] += 1;
         }
-        int highest_idx = 0;
+        int highestIndex = 0;
         for (int i = 0; i < array.length; i++) {
-            if (array[i] != 0) {
-                if (array[highest_idx] <= array[i]) {
-                    highest_idx = i;
-                }
+            if (array[i] != 0 && array[highestIndex] <= array[i]) {
+                highestIndex = i;
             }
         }
-        return (char) highest_idx;
+        return (char) highestIndex;
     }
 
     public static String squareDigits(String s) {
@@ -83,9 +81,9 @@ public class Code {
 
         int count = 0;
 
-        for (int row_idx = 0; row_idx < table.length; row_idx++) {
-          for (int col_idx = 0; col_idx < table[0].length; col_idx++) {
-            if (isIsolated(row_idx, col_idx)) {
+        for (int rowIdx = 0; rowIdx < table.length; rowIdx++) {
+          for (int colIdx = 0; colIdx < table[0].length; colIdx++) {
+            if (isIsolated(rowIdx, colIdx)) {
               count++;
             }
           }
@@ -98,19 +96,19 @@ public class Code {
         boolean[][] table = getSampleTable();
 
 
-        int max_row = table.length - 1;
-        int max_col = table[0].length - 1;
+        int maxRow = table.length - 1;
+        int maxCol = table[0].length - 1;
 
-        if ((row % max_row == 0) || (col % max_col == 0)) {
+        if ((row % maxRow == 0) || (col % maxCol == 0)) {
           return false;
         }
 
-        for (int rel_row = -1; rel_row < 2; rel_row++) {
-          for (int rel_col = -1; rel_col < 2; rel_col++) {
-            if (rel_col == 0 && rel_row == 0) {
+        for (int relRow = -1; relRow < 2; relRow++) {
+          for (int relCol = -1; relCol < 2; relCol++) {
+            if (relCol == 0 && relRow == 0) {
               continue;
             }
-            if (!table[rel_row + row][rel_col + col]) {
+            if (!table[relRow + row][relCol + col]) {
               return false;
             }
           }

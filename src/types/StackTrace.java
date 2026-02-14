@@ -3,7 +3,7 @@ package types;
 public class StackTrace {
 
     public static void main(String[] args) {
-        calculatePrice();
+        System.out.println(calculatePrice());
     }
 
     public static Double calculatePrice() {
@@ -19,7 +19,7 @@ public class StackTrace {
 
         Integer profitConstant = readProfitConstant();
 
-        return netCost + (0.1 * profitConstant * netCost);
+        return netCost + (0.1 * (profitConstant == null ? 0 : profitConstant) * netCost);
     }
 
     public static Integer readProfitConstant() {
