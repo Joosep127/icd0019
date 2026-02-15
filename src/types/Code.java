@@ -87,6 +87,7 @@ public class Code {
         for (int rowIdx = 0; rowIdx < table.length; rowIdx++) {
           for (int colIdx = 0; colIdx < table[0].length; colIdx++) {
             if (isIsolated(rowIdx, colIdx)) {
+              System.out.println(rowIdx + ":" + colIdx);
               count++;
             }
           }
@@ -101,22 +102,21 @@ public class Code {
 
         int maxRow = table.length - 1;
         int maxCol = table[0].length - 1;
-
-        if ((row % maxRow == 0) || (col % maxCol == 0)) {
-          return false;
-        }
+        int actRow;
+        int actCol;
 
         for (int relRow = -1; relRow < 2; relRow++) {
           for (int relCol = -1; relCol < 2; relCol++) {
-            if (relCol == 0 && relRow == 0) {
+            actRow = relRow + row;
+            actCol = relCol + col;
+            if ( (relCol == 0 && relRow == 0) || actRow < 0 || actRow > maxRow || actCol < 0 || actCol > maxCol  ) {
               continue;
             }
-            if (table[relRow + row][relCol + col]) {
+            if (table[actRow][actCol]) {
               return false;
             }
           }
         }
-
         return true;
     }
 
