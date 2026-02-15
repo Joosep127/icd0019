@@ -111,7 +111,7 @@ public class Code {
             if (relCol == 0 && relRow == 0) {
               continue;
             }
-            if (!table[relRow + row][relCol + col]) {
+            if (table[relRow + row][relCol + col]) {
               return false;
             }
           }
