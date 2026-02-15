@@ -95,10 +95,9 @@ public class Code {
         return count;
     }
 
-    
+
     public static boolean isIsolated(int row, int col) {
         boolean[][] table = getSampleTable();
-
 
         int maxRow = table.length - 1;
         int maxCol = table[0].length - 1;
