@@ -23,10 +23,7 @@ public class StackTrace {
     }
 
     public static Integer readProfitConstant() {
-        // Some code that produces null
-        Integer result = null;
-
-        return result;
+        return null;
     }
 
 }

@@ -13,9 +13,11 @@ public class FloatDecomposition {
             int mantissa = bits & 0x7FFFFF;
             float significand = 1.0f + (mantissa / (float) (1 << 23));
 
+            BigDecimal significandBD = new BigDecimal(Float.toString(significand));
+            BigDecimal valueBD = new BigDecimal(Float.toString(value));
+
             System.out.printf("%s = %s x 2^%s (%s)\n",
-                    value, new BigDecimal(significand),
-                    exponent, new BigDecimal(value));
+                    value, significandBD, exponent, valueBD);
         }
     }
 }
