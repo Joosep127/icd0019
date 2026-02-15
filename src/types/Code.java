@@ -95,7 +95,6 @@ public class Code {
         return count;
     }
 
-
     public static boolean isIsolated(int row, int col) {
         boolean[][] table = getSampleTable();
 
