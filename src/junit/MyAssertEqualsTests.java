@@ -87,7 +87,6 @@ public class MyAssertEqualsTests {
                 return false;
             }
         }
-        
         return true;
     }
 
