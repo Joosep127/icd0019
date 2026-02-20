@@ -9,7 +9,6 @@ import java.util.Random;
 public class Code {
 
     public static void main(String[] args) {
-        System.out.println(isolatedSquareCount()); // 11
     }
 
     public static int sum(int[] numbers) {

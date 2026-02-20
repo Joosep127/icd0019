@@ -65,8 +65,6 @@ public class MyAssertEqualsTests {
                 () -> myAssertEquals(a, b));
     }
 
-
-
     public void myAssertEquals(int expected, int actual) {
         if (expected != actual) {
             String message = "%s is not equal to %s"
@@ -76,14 +74,27 @@ public class MyAssertEqualsTests {
     }
 
     public void myAssertEquals(Long expected, Long actual) {
-        throw new RuntimeException("not implemented yet");
+        if (expected.longValue() != actual.longValue()) {
+            String message = "%s is not equal to %s"
+                    .formatted(actual, expected);
+            throw new AssertionError(message);
+        }
+    }
+
+    public boolean myAssertEqualsListCompare(int[] expected, int[] actual) {
+        for (int i = 0; i < expected.length; i++)
+            if (expected[i] != actual[i]) {
+                return false;
+            }
+        return true;
     }
 
     public void myAssertEquals(int[] expected, int[] actual) {
-        String message = "%s is not equal to %s"
-                .formatted(Arrays.toString(actual),
-                        Arrays.toString(expected));
-
-        throw new RuntimeException("not implemented yet");
+        if (expected.length != actual.length || !myAssertEqualsListCompare(expected, actual)) {
+            String message = "%s is not equal to %s"
+                    .formatted(Arrays.toString(actual),
+                            Arrays.toString(expected));
+            throw new AssertionError(message);
+        }
     }
 }
