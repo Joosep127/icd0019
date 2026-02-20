@@ -70,6 +70,7 @@ public class MainTests {
         assertThat(Code.isIsolated(7, 1)).isFalse();
         assertThat(Code.isIsolated(0, 9)).isTrue();
         assertThat(Code.isIsolated(5, 7)).isTrue();
+        
     }
 
     @Test
