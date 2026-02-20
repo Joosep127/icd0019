@@ -3,10 +3,42 @@ package junit;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
+import static junit.Code.mode;
+import static junit.Code.longestStreak;
+import static junit.Code.removeDuplicates;
 
 public class AssertTests {
+
+    @Test
+    public void testsMode() {
+        String[] input = {null, "", "abcb", "cbbc"};
+        Character[] expected = {null, null, 'b', 'c'};
+        for (int i = 0; i < input.length; i++) {
+            assertEquals(expected[i], mode(input[i]));
+        }
+    }
+
+    @Test
+    public void testsLongestStreak() {
+        String[] input = {"", "a", "abbcccaaaad", "abbcccaaaa"};
+        int[] expected = {0, 1, 4, 4};
+        for (int i = 0; i < input.length; i++) {
+            assertEquals(expected[i], longestStreak(input[i]));
+        }
+    }
+
+    @Test
+    public void testsRemoveDuplicates() {
+        int[][] input = {{}, {1, 2, 1, 3, 2}};
+        int[][] expected = {{}, {1,2,3}};
+        for (int i = 0; i < input.length; i++) {
+            assertArrayEquals(expected[i], removeDuplicates(input[i]));
+        }
+    }
 
     @Test
     public void testsAssertEqualsOrder() {
@@ -52,24 +84,6 @@ public class AssertTests {
         // possibly unexpected result and error message
         assertThat(a).isEqualTo(b);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     private int sum(int a, int b) {
         return a + b;
