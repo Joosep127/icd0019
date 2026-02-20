@@ -11,7 +11,17 @@ public class MainTests {
     public void findsSpecialNumbers() {
         assertTrue(Code.isSpecial(0));
 
-        // other test cases for isSpecial() method
+        assertTrue(Code.isSpecial(0));
+        assertTrue(Code.isSpecial(1));
+        assertTrue(Code.isSpecial(2));
+        assertTrue(Code.isSpecial(3));
+        assertFalse(Code.isSpecial(4));
+
+        assertTrue(Code.isSpecial(11));
+        assertFalse(Code.isSpecial(15));
+
+        assertTrue(Code.isSpecial(36));
+        assertFalse(Code.isSpecial(37));
     }
 
     @Test

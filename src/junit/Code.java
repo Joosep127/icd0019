@@ -11,7 +11,7 @@ public class Code {
 
     public static boolean isSpecial(int candidate) {
         int temp = candidate % 11;
-        return temp == 3 || temp == 0;
+        return 4 > temp;
     }
 
     public static int longestStreak(String inputString) {
