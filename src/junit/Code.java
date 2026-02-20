@@ -18,17 +18,17 @@ public class Code {
             return 0;
         }
 
-        char temp_char = 0;
+        char tempChar = 0;
         int count = 0;
         int ret = 0;
 
         for (char c : inputString.toCharArray()) {
-            if (c == temp_char) {
+            if (c == tempChar) {
                 count++;
 
             } else {
                 count = 1;
-                temp_char = c;
+                tempChar = c;
             }
             if (ret < count) {
                 ret = count;

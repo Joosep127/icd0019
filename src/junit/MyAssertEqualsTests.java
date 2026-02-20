@@ -82,10 +82,11 @@ public class MyAssertEqualsTests {
     }
 
     public boolean myAssertEqualsListCompare(int[] expected, int[] actual) {
-        for (int i = 0; i < expected.length; i++)
+        for (int i = 0; i < expected.length; i++) {
             if (expected[i] != actual[i]) {
                 return false;
             }
+        }
         return true;
     }
 
