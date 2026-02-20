@@ -5,7 +5,8 @@ import java.security.KeyStore;
 public class Code {
 
     public static void main(String[] args) {
-        System.out.println(longestStreak("a"));
+        int[] t = {100,0,0,3,4,562};
+        System.out.println(removeDuplicates(t));
     }
 
     public static boolean isSpecial(int candidate) {
@@ -80,11 +81,14 @@ public class Code {
     public static int[] removeDuplicates(int[] integers) {
         int[] newList = new int[integers.length];
         int size = 0;
+        boolean hasZeroHappened = false;
 
         for (int i : integers) {
-            if (!listContains(newList, i)) {
-                newList[size] = i;
-                size++;
+            if (i == 0 ? !hasZeroHappened : !listContains(newList, i)) {
+                newList[size++] = i;
+                if (i == 0) {
+                    hasZeroHappened = true;
+                }
             }
         }
 
