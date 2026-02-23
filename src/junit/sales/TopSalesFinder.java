@@ -17,7 +17,7 @@ public class TopSalesFinder {
         listSR = newSR;
     }
 
-    public SalesRecordResult[] ListSRToListRecordResult(SalesRecord[] listSR) {
+    public SalesRecordResult[] listSRToListRecordResult(SalesRecord[] listSR) {
         SalesRecordResult[] listSRR = new SalesRecordResult[listSR.length];
         SalesRecord sr;
         for (int i = 0; i < listSR.length; i++) {
@@ -46,7 +46,7 @@ public class TopSalesFinder {
             }
         }
 
-        return ListSRToListRecordResult(filtered);
+        return listSRToListRecordResult(filtered);
     }
 
     public void removeSalesRecordsFor(String productId) {
@@ -70,7 +70,6 @@ public class TopSalesFinder {
         listSR = newSR;
     }
     public SalesRecord[] getAllRecordsPaged(int pageNumber, int pageSize) {
-        SalesRecord[] paginatedSR;
         int startingIdx = (pageNumber - 1) * pageSize;
 
         if (startingIdx < 0 || listSR.length < startingIdx) {
@@ -79,7 +78,7 @@ public class TopSalesFinder {
 
         int remainingRecords = listSR.length - startingIdx;
         int currentPageSize = Math.min(pageSize, remainingRecords);
-        paginatedSR = new SalesRecord[currentPageSize];
+        SalesRecord[] paginatedSR = new SalesRecord[currentPageSize];
 
         for (int i = 0; i < currentPageSize; i++) {
             paginatedSR[i] = listSR[i+startingIdx];
