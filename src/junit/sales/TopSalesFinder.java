@@ -13,7 +13,7 @@ public class TopSalesFinder {
         
         for (int i = 0; i < listSRR.length; i++) {
           if (listSRR[i].productId().equals(record.productId())) {
-            listSRR[i] = listSRR[i].AddTotal(total);
+            listSRR[i] = listSRR[i].addTotal(total);
             found = true;
             break;
           }
