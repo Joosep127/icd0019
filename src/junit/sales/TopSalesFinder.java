@@ -13,7 +13,8 @@ public class TopSalesFinder {
         for (int i = 0; i < listSR.length; i++) {
           if (listSR[i].productId.equals(record.productId)) {
             listSR[i] += record.productPrice;
-            found = true
+            found = true;
+            break;
           }
         }
 
