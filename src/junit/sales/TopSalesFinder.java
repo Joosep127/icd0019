@@ -10,10 +10,10 @@ public class TopSalesFinder {
         record.itemsSold = 1;
         for (int i = 0; i < listSR.length; i++) {
           if (!listSR[i].productId.equals(record.productId)) {
-            continue
+            continue;
           }
           listSR[i] += record.productPrice;
-          return
+          return;
         }
 
         int size = listSR.length;
