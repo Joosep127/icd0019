@@ -3,34 +3,43 @@ package junit.sales;
 public class TopSalesFinder {
 
     SalesRecordResult[] listSRR = new SalesRecordResult[0];
+    SalesRecord[] listSR = new SalesRecord[0];
 
     public void registerSale(SalesRecord record) {
 
         boolean found = false;
 
-        int total = record.productPrice * record.itemsSold;
+        int total = record.productPrice() * record.itemsSold();
         
-        for (int i = 0; i < listSR.length; i++) {
-          if (listSRR[i].productId.equals(record.productId)) {
-            listSRR[i] += total;
+        for (int i = 0; i < listSRR.length; i++) {
+          if (listSRR[i].productId().equals(record.productId())) {
+            listSRR[i] = listSRR[i].AddTotal(total);
             found = true;
             break;
           }
         }
 
-        if (found) {
-            return;
+        int sizeSR = listSRR.length;
+        SalesRecord[] newSR = new SalesRecord[sizeSR + 1];
+
+        for (int i = 0; i < sizeSR; i++) {
+            newSR[i] = listSR[i];
         }
 
-        int size = listSR.length;
-        SalesRecordResult[] newSRR = new SalesRecordResult[size + 1];
+        newSR[sizeSR] = record;
+        listSR = newSR;
 
-        for (int i = 0; i < size; i++) {
-            newSRR[i] = listSRR[i];
+        if (!found) {
+            int sizeSRR = listSRR.length;
+            SalesRecordResult[] newSRR = new SalesRecordResult[sizeSRR + 1];
+
+            for (int i = 0; i < sizeSRR; i++) {
+                newSRR[i] = listSRR[i];
+            }
+
+            newSRR[sizeSRR] = new SalesRecordResult(record.productId(), total);
+            listSRR = newSRR;
         }
-
-        newSRR[size] = new SalesRecordResult(record.productId, total);
-        listSRR = newSRR;
     }
 
     public SalesRecordResult[] findItemsSoldOver(int amount) {
@@ -38,7 +47,7 @@ public class TopSalesFinder {
         SalesRecordResult[] filtered = new SalesRecordResult[0];
 
         for (SalesRecordResult srr : listSRR) {
-            if (srr.total > amount) {
+            if (srr.total() > amount) {
 
                 SalesRecordResult[] newArr = new SalesRecordResult[filtered.length + 1];
 
@@ -46,7 +55,7 @@ public class TopSalesFinder {
                     newArr[i] = filtered[i];
                 }
 
-                newArr[filtered.length] = sr;
+                newArr[filtered.length] = srr;
                 filtered = newArr;
             }
         }
@@ -57,7 +66,7 @@ public class TopSalesFinder {
     public void removeSalesRecordsFor(String productId) {
         int count = 0;
         for (SalesRecordResult srr : listSRR) {
-            if (sr != null && !Objects.equals(srr.productId, productId)) {
+            if (srr != null && !srr.productId().equals(productId)) {
               count++;
             }
         }
@@ -66,16 +75,16 @@ public class TopSalesFinder {
 
         int i = 0;
         for (SalesRecordResult srr : listSRR) {
-            if (!srr.productId.equals(productId)) {
+            if (!srr.productId().equals(productId)) {
                 newSRR[i] = srr;
                 i++;
             }
         }
 
-        listSR = newSR;
+        listSRR = newSRR;
     }
     public SalesRecord[] getAllRecordsPaged(int pageNumber, int pageSize) {
-        int startingIdx = (pageNumber - 1) * pageSize;
+        int startingIdx = pageNumber * pageSize;
 
         if (startingIdx < 0 || listSR.length < startingIdx) {
             return new SalesRecord[0];
@@ -84,6 +93,8 @@ public class TopSalesFinder {
         int remainingRecords = listSR.length - startingIdx;
         int currentPageSize = Math.min(pageSize, remainingRecords);
         SalesRecord[] paginatedSR = new SalesRecord[currentPageSize];
+
+        System.out.println(currentPageSize);
 
         for (int i = 0; i < currentPageSize; i++) {
             paginatedSR[i] = listSR[i+startingIdx];
@@ -98,7 +109,7 @@ public class TopSalesFinder {
 
         // returns the count of all records
 
-        return listSR.length;
+        return listSRR.length;
     }
 
     public void removeRecord(String id) {
