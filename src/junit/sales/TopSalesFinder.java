@@ -6,6 +6,16 @@ public class TopSalesFinder {
 
     public void registerSale(SalesRecord record) {
 
+        record.productPrice *= record.itemsSold;
+        record.itemsSold = 1;
+        for (int i = 0; i < listSR.length; i++) {
+          if (!listSR[i].productId.equals(record.productId)) {
+            continue
+          }
+          listSR[i] += record.productPrice;
+          return
+        }
+
         int size = listSR.length;
         SalesRecord[] newSR = new SalesRecord[size + 1];
 
@@ -24,8 +34,8 @@ public class TopSalesFinder {
             sr = listSR[i];
             listSRR[i] = new SalesRecordResult(sr.productId(), sr.itemsSold());
         }
-        //return listSRR;
-        return new SalesRecordResult[] {new SalesRecordResult("gei",1)};
+        return listSRR;
+        //return new SalesRecordResult[] {new SalesRecordResult("gei",1)};
     }
 
     public SalesRecordResult[] findItemsSoldOver(int amount) {
@@ -52,8 +62,8 @@ public class TopSalesFinder {
     public void removeSalesRecordsFor(String productId) {
         int count = 0;
         for (SalesRecord sr : listSR) {
-            if (!sr.productId().equals(productId)) {
-                count++;
+            if (sr != null && !Objects.equals(sr.productId(), productId)) {
+              count++;
             }
         }
 
