@@ -2,18 +2,24 @@ package junit.sales;
 
 public class TopSalesFinder {
 
-    SalesRecord[] listSR = new SalesRecord[0];
+    SalesRecord[] listSRR = new SalesRecord[0];
 
     public void registerSale(SalesRecord record) {
+
+        boolean found = false;
 
         record.productPrice *= record.itemsSold;
         record.itemsSold = 1;
         for (int i = 0; i < listSR.length; i++) {
-          if (!listSR[i].productId.equals(record.productId)) {
-            continue;
+          if (listSR[i].productId.equals(record.productId)) {
+            listSR[i] += record.productPrice;
+            found = true
           }
-          listSR[i] += record.productPrice;
-          return;
+        }
+
+
+        if (found) {
+            return;
         }
 
         int size = listSR.length;
