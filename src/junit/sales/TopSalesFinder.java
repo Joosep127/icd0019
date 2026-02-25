@@ -2,57 +2,45 @@ package junit.sales;
 
 public class TopSalesFinder {
 
-    SalesRecord[] listSRR = new SalesRecord[0];
+    SalesRecordResult[] listSRR = new SalesRecordResult[0];
 
     public void registerSale(SalesRecord record) {
 
         boolean found = false;
 
-        record.productPrice *= record.itemsSold;
-        record.itemsSold = 1;
+        int total = record.productPrice * record.itemsSold;
+        
         for (int i = 0; i < listSR.length; i++) {
-          if (listSR[i].productId.equals(record.productId)) {
-            listSR[i] += record.productPrice;
+          if (listSRR[i].productId.equals(record.productId)) {
+            listSRR[i] += total;
             found = true;
             break;
           }
         }
-
 
         if (found) {
             return;
         }
 
         int size = listSR.length;
-        SalesRecord[] newSR = new SalesRecord[size + 1];
+        SalesRecordResult[] newSRR = new SalesRecordResult[size + 1];
 
         for (int i = 0; i < size; i++) {
-            newSR[i] = listSR[i];
+            newSRR[i] = listSRR[i];
         }
 
-        newSR[size] = record;
-        listSR = newSR;
-    }
-
-    public SalesRecordResult[] listSRToListRecordResult(SalesRecord[] listSR) {
-        SalesRecordResult[] listSRR = new SalesRecordResult[listSR.length];
-        SalesRecord sr;
-        for (int i = 0; i < listSR.length; i++) {
-            sr = listSR[i];
-            listSRR[i] = new SalesRecordResult(sr.productId(), sr.itemsSold());
-        }
-        return listSRR;
-        //return new SalesRecordResult[] {new SalesRecordResult("gei",1)};
+        newSRR[size] = new SalesRecordResult(record.productId, total);
+        listSRR = newSRR;
     }
 
     public SalesRecordResult[] findItemsSoldOver(int amount) {
 
-        SalesRecord[] filtered = new SalesRecord[0];
+        SalesRecordResult[] filtered = new SalesRecordResult[0];
 
-        for (SalesRecord sr : listSR) {
-            if (sr.itemsSold() > amount) {
+        for (SalesRecordResult srr : listSRR) {
+            if (srr.total > amount) {
 
-                SalesRecord[] newArr = new SalesRecord[filtered.length + 1];
+                SalesRecordResult[] newArr = new SalesRecordResult[filtered.length + 1];
 
                 for (int i = 0; i < filtered.length; i++) {
                     newArr[i] = filtered[i];
@@ -63,23 +51,23 @@ public class TopSalesFinder {
             }
         }
 
-        return listSRToListRecordResult(filtered);
+        return filtered;
     }
 
     public void removeSalesRecordsFor(String productId) {
         int count = 0;
-        for (SalesRecord sr : listSR) {
-            if (sr != null && !Objects.equals(sr.productId(), productId)) {
+        for (SalesRecordResult srr : listSRR) {
+            if (sr != null && !Objects.equals(srr.productId, productId)) {
               count++;
             }
         }
 
-        SalesRecord[] newSR = new SalesRecord[count];
+        SalesRecordResult[] newSRR = new SalesRecordResult[count];
 
         int i = 0;
-        for (SalesRecord sr : listSR) {
-            if (!sr.productId().equals(productId)) {
-                newSR[i] = sr;
+        for (SalesRecordResult srr : listSRR) {
+            if (!srr.productId.equals(productId)) {
+                newSRR[i] = srr;
                 i++;
             }
         }
