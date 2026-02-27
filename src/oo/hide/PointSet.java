@@ -86,7 +86,6 @@ public class PointSet {
         }
 
         filled -= 1;
-        points[filled] = null;
     }
 
     @Override
