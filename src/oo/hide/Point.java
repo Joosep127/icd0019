@@ -1,5 +1,7 @@
 package oo.hide;
 
+import java.util.Objects;
+
 public class Point {
 
     public final int x;
@@ -12,12 +14,15 @@ public class Point {
 
     @Override
     public String toString() {
-        return null;
+        return String.format("(%d, %d)", x, y);
     }
 
     @Override
     public boolean equals(Object obj) {
-        return false;
+        if (!(obj instanceof Point other)) {
+            return false;
+        }
+        return (other.x == this.x && other.y == this.y);
     }
 
     @Override
