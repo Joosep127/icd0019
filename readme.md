@@ -1,107 +1,181 @@
-Objektid
+Erindid
 
-Tõstke faild kataloogist src/oo oma Github'i
-reposse (icd0019) kataloogi src/oo.
+Tõstke kõik failid, mis on kataloogis src/exceptions oma Github'i 
+reposse (icd0019) kataloogi src/exceptions.
 
 Veenduge, et kood kompileerub.
 
 Kui valite Idea-s Build menüüst -> Rebuild project peaks tulema teade 
 "Compilation completed successfully ..."
 
+1. Ülesande mõte on kirjutada kood, mis käitub korrektselt ka vea olukorras
+   ja aru saada, kuidas sellist koodi testida.
 
-1. Klassis oo.struct.PointArrayTests on test coordinatesAsArrays(), mis 
-   väljastab massiivis olevate punktide z-koordinaadid. See kood on liialt segane.
+   Kirjutage lõpuni klassis exceptions.basic.Code meetod readDataFrom().
    
-   Et koodi selgemaks muuta, kirjutage klass Point3D, milles on avalikud 
-   (public) väljad x, y ja z koordinaadi jaoks.
+   Meetod peab sissetuleva FakeFile tüüpi argumendi
+   - avama (open)
+   - sellest lugema (read)
+   - ja selle sulgema (close)
    
-   Kirjutage coordinatesAsObjects() testi sisu, mis kasutab teie loodud 
-   Point3D klassi, z-koordinaatide väljastamiseks.
+   Kui lugemisel juhtub viga, peaks meetod tagastama "someDefaultValue" ja
+   fail peab suletud saama.
    
-   Lisaks proovige kasutada Point3D klassi asemel Java record (kirje) 
-   konstruktsiooni.
-   
-2. Kirjutage lõpuni klass oo.hide.Counter, et tööle hakkaksid testid 
-   klassis oo.hide.CounterTests.
-   
-   Konstruktorist antakse sisse algväärtus ja suurendamise samm.
+   Koodi testimiseks on samas paketis asuv klass TryCatchSampleTests.java.
+   Vea olukordade testimine päris faili abil on tülikas ja sellepärst on
+   selles koodis faili simuleeritud. Testimise eesmärgil on loodud
+   klass FakeFile, mis võimaldab meil oma koodi veaolukordi testida.
 
-3. Kirjutage lõpuni klass oo.hide.Timer. 
+2. Klassis exceptions.basic.Code on meetod minimumElement(), mis leiab 
+   massiivist väikseima elemendi.
+   
+   See, et meetod tagastab tühja sisendmassiivi puhul nulli, on halb lahendus.
+   
+   Muutke käitumist nii, et tühja massiivi või null-i puhul viskaks 
+   meetod erindi (IllegalArgumentException).
+   
+   Kirjutage klassi MinimumElementTests test mõlema juhu kontrollimiseks.
 
-   Proovimiseks on klass oo.hide.TimerTest.
-   
-   Uue isendi loomisel peaks fikseerima praeguse aja. Klassil on meetod
-   getPassedTime(), mis ütleb, mitu sekundit on isendi loomisest möödunud.
-   
-   System.currentTimeMillis() ütleb, kui palju on möödunud millisekundeid 
-   ajahetkest 1. jaanuar 1970, kell 00:00.
+3. Klassis exceptions.basic.Code on meetod containsSingleLetters().
 
-4. Kirjutage lõpuni klass oo.hide.Fibonacci, et tööle hakkaks test 
-   oo.hide.FibonacciTests.
-   
-   Fibonacci numbrid on: 0, 1, 1, 2, 3, 5, 8, 13, ...
-   
-   Fibonacci numbrite arvutamise valem on fib(n) = fib(n - 1) + fib(n - 2)
-   
-   Rohkem infot: https://en.wikipedia.org/wiki/Fibonacci_number   
+   Selles meetodis on sobimatu try/catch konstruktsioon. Meetodis on ka viga, 
+   mis avaldub, kui sisend on null.
 
-5. Kirjutage klassile oo.hide.Point meetodid toString() ja equals().
-
-   ```toString()``` meetodit saate kontrollida nii: ```System.out.println(new Point(1, 2));```
+   Tehke see containsSingleLetters() meetod korda. 
    
-   ```equals()``` meetodi kontrolliks on test oo.hide.EqualityTests.
+   Koodi testimiseks on klass BadTryCatchTest.java.
    
-   Abiks võib olla meetod java.util.Objects.equals();
+4. Selle ülesande mõte on näidata, kuidas kasutada erindeid info vahetuseks 
+   programmi erinevate osade vahel.
+
+   Paketis exceptions.channel on klass Program. See programm peaks arvutama 
+   sisendi ja etteantud konfiguratsiooni põhjal tulemuse ja selle väljastama. 
+   Praegu töötab programm vaid juhul, kui mingit viga ei tekki.
+
+   Arvutuseks vajaliku konfiguratsiooni andmed tulevad klassist ConstantProvider. 
+   Selles on meetod getMultiplier(), mis üldjuhul tagastab mingi konstandi.
+   Antud juhul on konkreetne arvutus ebaoluline ja tähelepanu on veatöötlusel.
    
-6. Kirjutage lõpuni klass oo.hide.PointSet, millel on meetodid:
-
-   ```add()``` - lisab punkti hulka.
+   Et kontrollida, kas meie kood töötab korrektselt ka vigade korral, on 
+   ConstantProvider klassis tehtud lisameetodid, mis võimaldavad selle käitumist 
+   juhtida. See käitumine on dokumenteeritud klassis ConstantProviderTests.
    
-   ```size()``` - ütleb, mitu punkti on hulgas.
-
-   ```contains()``` - ütleb, kas argumendina antud punkt on hulgas.
+   Lisage programmile järgmine veahalduse loogika. 
    
-   ```toString()``` - tagastab stringi, mis kujutab hulgas olevaid punkte.
-                nt: "(1, 2), (3, 4), (5, 1)"
-
-   ```equals()``` - ütleb, kas kaks hulka on võrsed ehk sisaldavad võrdseid elemente.
-
-   ```subtract()``` - tagastab uue hulga, milles on need esialgse hulga elemendid, mida 
-                teises hulgas ei eksisteeri. Esialgne hulk ei tohiks muutuda.
-
-   ```intersect()``` - tagastab uue hulga, milles on elemendid, mis on mõlemas 
-                 hulgas olemas. Esialgne hulk ei tohiks muutuda.
-
-   ```remove()``` - eemaldab vastava punkti hulgast.
-
-   Hulgas ei ole duplikaate ehk kahte samade koordinaatidega punkti.
-   Kui lisatakse punkt, mis hulgas juba on, siis hulk ei muutu.   
-   Lisaks peab olema võimalik hulka salvestada ka null elementi.
-                
-   Hulgas olevaid punkte peaks hoidma massiivis. 
-
-   Punkti info hoidmiseks sobiks paremini Java record kui klass aga
-   sellel korral peaksite aga just klassi kasutama. Record teeb teie 
-   eest mõned olulised asjad ära ja ülesande üks eesmärkidest on need asjad 
-   selgeks saada.
-
-   NB! List-i, Set-i või muid dünaamilisi kollektsioone ei tohi kasutada. 
-   Peate läbi saama ainult massiiviga.
+   Kui ConstantProvider.getMultiplier() viskab erindi MissingConstantException,
+   siis peaks programm väljastama "### Error: Constant is missing ###"
+   Selle sõne saate meedodiga formatError("Constant is missing").
    
-   Massiivi suurus määrake objekti loomisel. Esialgu võiks ruumi olla nt.
-   kümnele elemendile. Ehk hulka saab panna kuni 10 elementi. 
+   Selle olukorra proovimiseks on klassis exceptions.ProgramTests meetod
+   handlesMissingConstantException().   
    
-   Selliselt fikseeritud suurusega saate enamuse koodist ära kirjutada.   
-   Hiljem lisage võimalus, et hulgale saaks esialgse suuruse ette anda ja 
-   kui esialgsest ruumist jääb väheks, siis peaks ruum (massiiv) automaatselt
-   kahekordseks kasvama.
+   Kui ConstantProvider.getMultiplier() viskab erindi CorruptConfigurationException,
+   siis peaks programm väljastama "### Error: Configuration file is corrupt ###"
+   Selle sõne saate meedodiga formatError("Configuration file is corrupt").
    
-   Kood peab läbima testid klassist PointSetTests.
+   Kui ConstantProvider.getMultiplier() viskab erindi IOException,
+   siis peaks programm väljastama "### Error: can't find configuration file ###"
+   Selle sõne saate meedodiga formatError(e.getMessage()).
    
-8. Commit-ige muudatused ja push-ige need Github'i. 
+   Kontrollitud erindeid samal viisil simuleerida ei saa, seega viimase juhu 
+   testimiseks peatete calculate() meetodis provider.getMultiplier() asemele 
+   kirjutama provider.getMultiplier2();
+   
+5. Paketis exceptions.wrap on klass DirectoryListPrinter meetodiga printDirectoryList().
+   
+   Meetodi DirectoryListPrinter.getDirectoryFileList() deklaratsioonis on 
+   märgitud "throws IOException" ja seega peab sama märke tegema ka 
+   meetodistes, mis seda omakorda kasutavad.
+   
+   Kasutage meetodis getDirectoryFileList() erindite mähkimist (wrapping)
+   selleks, et saaks kõigi meetodite deklaratsioonidest "throws IOException"
+   eemaldada. 
+
+6. Paketis exceptions.translate on klass ConfigurationLoader meetodiga 
+   loadConfiguration(). Meedodi käivitamiseks on klass ConfigurationLoaderTests.
+
+   Kui konfiguratsiooni lugemine ebaõnnestub teadatakse meile sellest erindiga.
+   
+   Soovime muuta programmi nii, et üldise erindi asemel visatakse 
+   rakendusespetsiifiline erind.
+   
+   Kui konfiguratsiooni faili ei eksisteeri peaks programm viskama 
+   erindi nimega ConfigurationException. Seda olukorda saate proovida määrates 
+   konfiguratsioonifaili asukohaks "./non-existent".
+   
+   Kui konfiguratsiooni fail viitab faili asemel kataloogile peaks programm 
+   viskama erinidi nimega InstallationException. Seda olukorda saate proovida 
+   määrates konfiguratsioonifaili asukohaks "./".
+   
+7. Kirjutage programm, mis võtab sisse täisarvulise numbri ja tagastab 
+   selle sõnadena. nt. 123 -> "ükssada kakskümmend kolm"
+   
+   Seda programmi võiks kasutada näiteks arvete automaatse genereerimise 
+   juures.
+   
+   Soovime, et programm ei oleks seotud konkreetse keelega ja hiljem 
+   oleks võimalik uusi keeli lisada.
+   
+   See paindlikus on lahendatud selliselt, et numbritega seotud sõnad on
+   programmi juurde kuuluvates failides võti-väärtus paaridena.
+   
+   Näiteks:
+       1=üks
+       2=kaks
+       teen=teist
+       tens-suffix=kümmend
+
+   Esialgu peate programmi tööle saama eesti ja inglise keeles ning ühes 
+   kunstlikus keeles. Vastavad tõlke failid on ette antud.
+   
+   Kuna erinevates keeltes on numbreid tähistavate sõnade moodustamine 
+   erinev, siis soovime selle erinevuse samuti tõlgetefaili abil lahendada.
+   
+   Näiteks eesti keeles on "üksteist" moodustatav sama reegli järgi, 
+   nagu näiteks "kolmteist". Inglise keeles on "eleven" ebareeglipärane.
+   
+   Seega kui miski on ebareeglipärane, siis peab selle jaoks eraldi 
+   tõlge olema. Kui programm mingi numbri jaoks tõlget ei leia, siis 
+   moodustab ta selle üldise reegli alusel.
+   
+   nt. 11 = "üks" + "teist", 12 = "kaks" + "teist", jne.
+   
+   Programm peaks teatud vigadest teatama erindi viskamisega. Need 
+   olukorrad on kirjeldatud programmi testides.
+
+   Kvaliteetne programm on selline, mis on võimalikult paindlik ja 
+   milles on võimalikult vähe duplikatsiooni.
+   
+   Keele failidest info lugemise näide on failis ReadPropertiesFileExample.java.
+   
+   Numbrite osadeks jagamise näide:
+
+       int number = 231;
+       int hundreds = number / 100; // jagamine täisarvu täpsusega
+       number -= hundreds * 100;    // eemalda sajad
+       int tens = number / 10;
+       number -= tens * 10;
+       int ones = number % 10;
+
+   Kui teie kood oskab teisendada numbreid nullist kuni 130ni saate 4 punkti 
+   ning kui see saab hakkama numbritega nullist kuni 1 miljardini, 
+   siis saate 6 punkti.
+
+   Selle ülesande kohta on ka koodi ülevaatuse võimalus. Kui esitate lahenduse 
+   tähtajaks, siis tähtaja möödudes on teil võimalik kahe teise tudengi 
+   tööd hinnata ja selle eest punkte saada. 
+   
+   Ülevaatuse leiate pärast tähtaja möödumist hindamissüsteemist ja selle 
+   esitamiseks on aega 7 päeva.
+
+   Ülevaatusel tuleb vastata kahele küsimusele.
+     - Kas koodis on kohti, mis on seotud konkreetse keelega (Nt. eesti keelega)?
+     - Kas kõik avatud ressursid saavad ka suletud?
+   
+8. Commit-ige muudatused ja push-ige need Bitbucket-isse. 
     
-   Lisage commit-ile tag ex04.
+    Lisage commit-ile tag ex05.
     
-   Veenduge tulemuste lehelt, et tulemus on positiivne.
+    Veenduge tulemuste lehelt, et tulemus on positiivne.
 
-Lahendused (1-5) Seletused (6): https://youtu.be/bAysWXANM-g
+Lahendused ja seletused 1-6 seletused 7: https://youtu.be/mpg2ccA_4AQ
