@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 
 public class DirectoryListPrinter {
 
-    public void printDirectoryList() throws IOException {
+    public void printDirectoryList() {
         Path currentDirectory = Paths.get(".");
 
         for (Path p : getDirectoryFileList(currentDirectory)) {
@@ -18,8 +18,12 @@ public class DirectoryListPrinter {
         }
     }
 
-    private DirectoryStream<Path> getDirectoryFileList(Path currentDirectory) throws IOException {
-        return Files.newDirectoryStream(currentDirectory);
+    private DirectoryStream<Path> getDirectoryFileList(Path currentDirectory) {
+        try {
+            return Files.newDirectoryStream(currentDirectory);
+        } catch (IOException e) {
+            return null;
+        }
     }
 
 

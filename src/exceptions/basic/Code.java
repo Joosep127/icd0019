@@ -1,24 +1,26 @@
 package exceptions.basic;
 
+import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+
 public class Code {
 
     public String readDataFrom(FakeFile file) {
+        file.open();
+        String text;
         try {
-          file.open();
-          String text = file.read()
-          file.close();
-          return text
-        } catch (e) {
-          try {
-            file.close()
-          }
-          return "some default value"
+          text = file.read();
+        } catch (Exception IOException) {
+            file.close();
+            return "some default value";
         }
+        file.close();
+        return text;
     }
 
     public static Integer minimumElement(int[] integers) {
         if (integers == null || integers.length == 0) {
-            return null;
+            throw new IllegalArgumentException();
         }
 
         int minimumElement = integers[0];
@@ -34,6 +36,9 @@ public class Code {
 
     public static boolean containsSingleLetters(String s) {
 
+        if (s == null || s.equals("")) {
+            return false;
+        }
         int index = 0;
 
         try {

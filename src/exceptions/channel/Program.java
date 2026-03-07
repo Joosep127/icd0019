@@ -1,15 +1,24 @@
 package exceptions.channel;
 
+import java.io.IOException;
+
 public class Program {
 
     /* default */ ConstantProvider provider = new ConstantProvider();
 
     public void run(int input) {
-        double result = calculate(input);
+        try {
+            double result = calculate(input);
 
-        String formatted = format(String.valueOf(result));
+            String formatted = format(String.valueOf(result));
 
-        present(formatted);
+            present(formatted);
+        } catch (MissingConstantException e) {
+            System.out.println(formatError("Constant is missing"));
+        } catch (CorruptConfigurationException e) {
+            System.out.println(formatError("Configuration file is corrupt"));
+        }
+
 
     }
 
