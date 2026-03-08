@@ -70,10 +70,7 @@ public class NumberConverter {
   }
 
   public String getNthLine(int n) {
-    try {
-      return expected.get(n);
-    } catch (IOException ignored) {
-    }
+    return expected.get(n);
   }
 
   public String numberInWords(Integer number) {
