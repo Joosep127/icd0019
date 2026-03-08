@@ -102,8 +102,9 @@ public class NumberConverter {
     number = number - (number / (key * 10)); // Gets rid of already checked numbers of numbers that are beyond the range
                                              // of which I'm expected to turn in to strings
 
-    if (skipFuture || addingAfterDelim)
+    if (skipFuture || addingAfterDelim) {
       return "";
+    }
     if (number == 0) {
       skipFuture = true;
     }
