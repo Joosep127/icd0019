@@ -23,28 +23,28 @@ public class NumberConverter {
   public NumberConverter(String lang) {
     this.lang = lang;
     try {
-      properties = GetProperties();
+      properties = getProperties();
     } catch (FileNotFoundException e) {
       throw new MissingLanguageFileException(lang, e);
     } catch (IOException e) {
       throw new BrokenLanguageFileException(lang, e);
     }
     try {
-      expected = GetExpected();
+      expected = getExpected();
     } catch (IOException ignored) {
     }
   }
 
-  private List<String> GetExpected() throws IOException {
+  private List<String> getExpected() throws IOException {
     String filePath = String.format("src/exceptions/numbers/expected-%s.txt", lang);
     return Files.readAllLines(Paths.get(filePath), StandardCharsets.UTF_8);
   }
 
-  private Properties GetProperties() throws IOException, FileNotFoundException {
+  private Properties getProperties() throws IOException, FileNotFoundException {
     String filePath = String.format("src/exceptions/numbers/numbers_%s.properties", lang);
 
     Properties properties = new Properties();
-    FileInputStream is = null;
+    FileInputStream is;
 
     is = new FileInputStream(filePath);
 
