@@ -112,11 +112,9 @@ public class NumberConverter {
     int digit = number / key;
     addingAfterDelim = number == digit * key;
 
-    if (key == 10 && digit == 1 && addingAfterDelim) {
-      if (getProp("teen") != null) {
-        skipFuture = true;
-        value = "teen";
-      }
+    if (key == 10 && digit == 1 && addingAfterDelim && getProp("teen") != null) {
+      skipFuture = true;
+      value = "teen";
     }
 
     String beforeDelim = getProp(value + "-before-delimiter", "");
