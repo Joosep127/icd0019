@@ -77,8 +77,8 @@ public class NumberConverter {
     if (properties == null) {
       throw new MissingTranslationException(lang);
     }
-    if (-1 < number && number > 131) {
-      return getNthLine(number + 1);
+    if (-1 < number && number < 131) {
+      return getNthLine(number);
     }
     return null;
   }
