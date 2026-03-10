@@ -176,7 +176,7 @@ public class NumberConverter {
     String teenValue = handleTeen(key, digit, addingAfterDelim);
     if (teenValue != null) {
       value = teenValue;
-    };
+    }
 
     String beforeDelim = getProp(value + "-before-delimiter", "");
     String afterDelim = addingAfterDelim ? getProp(value + "-after-delimiter", "") : "";
