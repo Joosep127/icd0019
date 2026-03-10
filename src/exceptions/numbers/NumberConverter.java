@@ -40,7 +40,7 @@ public class NumberConverter {
     return Files.readAllLines(Paths.get(filePath), StandardCharsets.UTF_8);
   }
 
-  private Properties getProperties() throws IllegalArgumentException, IOException {
+  private Properties getProperties() throws IOException {
     String filePath = String.format("src/exceptions/numbers/numbers_%s.properties", lang);
 
     Properties properties = new Properties();
@@ -89,7 +89,7 @@ public class NumberConverter {
     int index = 0;
 
     while (place <= number) {
-      int reduced = (number / place) * place;
+      int reduced = number / place * place;
       output[index++] = reduced;
       place *= 10;
     }
@@ -110,10 +110,10 @@ public class NumberConverter {
       String temp = getProp(String.valueOf(num));
 
       if (temp != null && !temp.equals(String.valueOf(num))) {
-        return new int[] {num, original - num};
+        return new int[] { num, original - num };
       }
 
-      int truncated = (original / divisor) * divisor;
+      int truncated = original / divisor * divisor;
 
       if (truncated == num) {
         divisor *= 10;
@@ -139,8 +139,9 @@ public class NumberConverter {
   }
 
   private String applyNumberRules(int key, String value, int number) {
-    number = number - (number / (key*10)) * key * 10; // Gets rid of already checked numbers of numbers that are beyond the range
-                                             // of which I'm expected to turn in to strings
+    number = number - (number / key * 10) * key * 10; // Gets rid of already checked numbers of numbers that are beyond
+                                                      // the range
+    // of which I'm expected to turn in to strings
 
     if (skipFuture || !addingAfterDelim) {
       return "";
@@ -153,7 +154,7 @@ public class NumberConverter {
     if (digit == 0) {
       return "";
     }
-    addingAfterDelim = !(number == digit * key);
+    addingAfterDelim = number != digit * key;
 
     if (key == 10 && digit == 1 && addingAfterDelim && getProp("teen") != null) {
       skipFuture = true;
@@ -175,7 +176,6 @@ public class NumberConverter {
       return applyPrefixSuffixAndDelimiters(sufpre, deLims, digit);
     }
     sufpre[1] = "";
-    number = exception[1];
     return applyPrefixSuffixAndDelimiters(sufpre, deLims, exception[0]);
   }
 
