@@ -1,12 +1,11 @@
 package exceptions.numbers;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedHashMap;
 import java.util.Properties;
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -23,9 +22,9 @@ public class NumberConverter {
     this.lang = lang;
     try {
       properties = getProperties();
-    } catch (FileNotFoundException e) {
-      throw new MissingLanguageFileException(lang, e);
     } catch (IOException e) {
+      throw new MissingLanguageFileException(lang, e);
+    } catch (IllegalArgumentException e) {
       throw new BrokenLanguageFileException(lang, e);
     }
     try {
@@ -41,7 +40,7 @@ public class NumberConverter {
     return Files.readAllLines(Paths.get(filePath), StandardCharsets.UTF_8);
   }
 
-  private Properties getProperties() throws IOException, FileNotFoundException {
+  private Properties getProperties() throws IllegalArgumentException, IOException {
     String filePath = String.format("src/exceptions/numbers/numbers_%s.properties", lang);
 
     Properties properties = new Properties();
@@ -82,27 +81,68 @@ public class NumberConverter {
     return properties.getProperty(s, def);
   }
 
-  private String checkExpectation(int number, String def) {
-    return getProp(String.valueOf(number), def);
+  public int[] reduceNumber(int number) {
+    int digits = String.valueOf(number).length();
+    int[] output = new int[digits];
+
+    int place = 1;
+    int index = 0;
+
+    while (place <= number) {
+      int reduced = (number / place) * place;
+      output[index++] = reduced;
+      place *= 10;
+    }
+
+    return output;
+  }
+
+  private int[] checkExpectation(int number) {
+    if (number == 1) {
+      return new int[] {};
+    }
+    int original = number;
+
+    int divisor = 10;
+    int num = number;
+
+    while (num > 0) {
+      String temp = getProp(String.valueOf(num));
+
+      if (temp != null && !temp.equals(String.valueOf(num))) {
+        return new int[] {num, original - num};
+      }
+
+      int truncated = (original / divisor) * divisor;
+
+      if (truncated == num) {
+        divisor *= 10;
+        continue;
+      }
+
+      num = truncated;
+      divisor *= 10;
+    }
+    return new int[] {};
   }
 
   private String str(int num) {
     return String.valueOf(num);
   }
 
-  private String applyPrefixSuffixAndDelimiters(String[] sufpre, String[] deLims, int digit, int number) {
+  private String applyPrefixSuffixAndDelimiters(String[] sufpre, String[] deLims, int number) {
     if (skipFuture) { // We know for a fact that we're on the teens here
-      return deLims[0] + digit + sufpre[1];
+      return deLims[0] + getProp(str(number)) + sufpre[1];
     }
 
-    return sufpre[0] + digit + deLims[0] + sufpre[1] + deLims[1];
+    return sufpre[0] + getProp(str(number)) + deLims[0] + sufpre[1] + deLims[1];
   }
 
   private String applyNumberRules(int key, String value, int number) {
-    number = number - (number / (key * 10)); // Gets rid of already checked numbers of numbers that are beyond the range
+    number = number - (number / (key*10)) * key * 10; // Gets rid of already checked numbers of numbers that are beyond the range
                                              // of which I'm expected to turn in to strings
 
-    if (skipFuture || addingAfterDelim) {
+    if (skipFuture || !addingAfterDelim) {
       return "";
     }
     if (number == 0) {
@@ -110,7 +150,10 @@ public class NumberConverter {
     }
 
     int digit = number / key;
-    addingAfterDelim = number == digit * key;
+    if (digit == 0) {
+      return "";
+    }
+    addingAfterDelim = !(number == digit * key);
 
     if (key == 10 && digit == 1 && addingAfterDelim && getProp("teen") != null) {
       skipFuture = true;
@@ -126,27 +169,39 @@ public class NumberConverter {
     String[] deLims = { beforeDelim, afterDelim };
     String[] sufpre = { prefix, suffix };
 
-    return checkExpectation(number, applyPrefixSuffixAndDelimiters(sufpre, deLims, digit, number));
+    int[] exception = checkExpectation(number);
+
+    if (exception.length == 0) {
+      return applyPrefixSuffixAndDelimiters(sufpre, deLims, digit);
+    }
+    sufpre[1] = "";
+    number = exception[1];
+    return applyPrefixSuffixAndDelimiters(sufpre, deLims, exception[0]);
   }
 
   public String numberInWords(int number) {
-    if (properties == null) {
+    if (properties.isEmpty()) {
       throw new MissingTranslationException(lang);
     }
     if (-1 < number && number < 131) {
       return getNthLine(number);
     }
-    addingAfterDelim = false;
+
+    if (number == 0) {
+      return getProp("0");
+    }
+
+    addingAfterDelim = true;
     skipFuture = false;
 
     StringBuilder sb = new StringBuilder();
-    Map<Integer, String> values = Map.of(
-        1000000000, "billion",
-        1000000, "million",
-        1000, "thousand",
-        100, "hundred",
-        10, "tens",
-        1, "ones");
+    Map<Integer, String> values = new LinkedHashMap<>();
+    values.put(1000000000, "billion");
+    values.put(1000000, "million");
+    values.put(1000, "thousand");
+    values.put(100, "hundred");
+    values.put(10, "tens");
+    values.put(1, "ones");
     values.forEach((key, value) -> sb.append(applyNumberRules(key, value, number)));
 
     return sb.toString();

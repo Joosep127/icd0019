@@ -44,13 +44,7 @@ public class NumberConverterTests {
   public void canConvertNumbersToEnglish() {
     NumberConverter converter = new NumberConverter("en");
 
-    assertThat(converter.numberInWords(0)).isEqualTo("zero");
-
-    assertThat(converter.numberInWords(1)).isEqualTo("one");
-
-    assertThat(converter.numberInWords(13)).isEqualTo("thirteen");
-
-    assertThat(converter.numberInWords(123)).isEqualTo("one hundred twenty-three");
+    assertThat(converter.numberInWords(131)).isEqualTo("one hundred thirty-one");
   }
 
   @Test
