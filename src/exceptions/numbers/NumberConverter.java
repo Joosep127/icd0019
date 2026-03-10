@@ -138,8 +138,25 @@ public class NumberConverter {
     return sufpre[0] + number + deLims[0] + sufpre[1] + deLims[1];
   }
 
+  private String handleTeen(int key, int digit, boolean addingAfterDelim) {
+    if (key == 10 && digit == 1 && addingAfterDelim && getProp("teen") != null) {
+      skipFuture = true;
+      return "teen";
+    }
+    return null;
+  }
+
+  private String getSubWord(int digit) {
+    if (str(digit).length() == 1) {
+      return getProp(str(digit));
+    } else {
+      NumberConverter converter = new NumberConverter(lang);
+      return converter.numberInWords(digit);
+    }
+  }
+
   private String applyNumberRules(int idx, int number) {
-      if (intValues.length <= idx) {
+      if (intValues.length <= idx || number == 0 || skipFuture || !addingAfterDelim) {
           return "";
       }
     int key = intValues[idx];
@@ -149,13 +166,6 @@ public class NumberConverter {
     if (idx != 0) {
       number -= number / previous * previous;
     }
-    if (number == 0) {
-        skipFuture = true;
-    }
-
-    if (skipFuture || !addingAfterDelim) {
-      return "";
-    }
 
     int digit = number / key;
     if (digit == 0) {
@@ -163,10 +173,8 @@ public class NumberConverter {
     }
     addingAfterDelim = number != digit * key;
 
-    if (key == 10 && digit == 1 && addingAfterDelim && getProp("teen") != null) {
-      skipFuture = true;
-      value = "teen";
-    }
+    String teenValue = handleTeen(key, digit, addingAfterDelim);
+    if (teenValue != null) value = teenValue;
 
     String beforeDelim = getProp(value + "-before-delimiter", "");
     String afterDelim = addingAfterDelim ? getProp(value + "-after-delimiter", "") : "";
@@ -183,13 +191,7 @@ public class NumberConverter {
         sufpre[1] = "";
         return applyPrefixSuffixAndDelimiters(sufpre, deLims, getProp(str(exception[0]))) + applyNumberRules(idx+1, exception[1]);
     }
-    String subWord;
-    if (str(digit).length() != 1) {
-        NumberConverter converter = new NumberConverter(lang);
-        subWord = converter.numberInWords(digit);
-    } else {
-        subWord = getProp(str(digit));
-    }
+    String subWord = getSubWord(digit);
     return applyPrefixSuffixAndDelimiters(sufpre, deLims, subWord) + applyNumberRules(idx+1, number);
   }
 
