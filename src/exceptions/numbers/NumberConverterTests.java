@@ -42,9 +42,9 @@ public class NumberConverterTests {
 
   @Test
   public void canConvertNumbersToEnglish() {
-    NumberConverter converter = new NumberConverter("en");
+    NumberConverter converter = new NumberConverter("et");
 
-    assertThat(converter.numberInWords(131)).isEqualTo("one hundred thirty-one");
+    assertThat(converter.numberInWords(654000)).isEqualTo("kuussada viiskümmend neli tuhat");
   }
 
   @Test

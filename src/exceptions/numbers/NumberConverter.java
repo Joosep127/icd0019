@@ -4,14 +4,14 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.LinkedHashMap;
-import java.util.Properties;
+import java.util.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Map;
 
 public class NumberConverter {
+  String[] strValues = {"billion", "million", "thousand", "hundred", "tens", "ones"};
+  int[] intValues = {1000000000, 1000000, 1000, 100, 10, 1};
+
   List<String> expected;
   Properties properties;
   String lang;
@@ -130,18 +130,24 @@ public class NumberConverter {
     return String.valueOf(num);
   }
 
-  private String applyPrefixSuffixAndDelimiters(String[] sufpre, String[] deLims, int number) {
+  private String applyPrefixSuffixAndDelimiters(String[] sufpre, String[] deLims, String number) {
     if (skipFuture) { // We know for a fact that we're on the teens here
-      return deLims[0] + getProp(str(number)) + sufpre[1];
+      return deLims[0] + number + sufpre[1];
     }
 
-    return sufpre[0] + getProp(str(number)) + deLims[0] + sufpre[1] + deLims[1];
+    return sufpre[0] + number + deLims[0] + sufpre[1] + deLims[1];
   }
 
-  private String applyNumberRules(int key, String value, int number) {
-    number = number - number / (key * 10) * key * 10; // Gets rid of already checked numbers of numbers that are beyond
-                                                      // the range
-    // of which I'm expected to turn in to strings
+  private String applyNumberRules(int idx, int number) {
+    int key = intValues[idx];
+    String value = strValues[idx];
+
+    int previous = idx == 0 ? 0 : intValues[idx-1];
+    if (idx != 0) {
+      number -= number / previous * previous; // Gets rid of already checked numbers of numbers that are beyond
+      // the range
+      // of which I'm expected to turn in to strings
+    }
 
     if (skipFuture || !addingAfterDelim) {
       return "";
@@ -173,10 +179,13 @@ public class NumberConverter {
     int[] exception = checkExpectation(number);
 
     if (exception.length == 0) {
-      return applyPrefixSuffixAndDelimiters(sufpre, deLims, digit);
+      if (digit > 10) {
+        return applyPrefixSuffixAndDelimiters(sufpre, deLims, numberInWords(digit));
+      }
+      return applyPrefixSuffixAndDelimiters(sufpre, deLims, getProp(str(digit)));
     }
     sufpre[1] = "";
-    return applyPrefixSuffixAndDelimiters(sufpre, deLims, exception[0]);
+    return applyPrefixSuffixAndDelimiters(sufpre, deLims, getProp(str(exception[0])));
   }
 
   public String numberInWords(int number) {
@@ -195,14 +204,10 @@ public class NumberConverter {
     skipFuture = false;
 
     StringBuilder sb = new StringBuilder();
-    Map<Integer, String> values = new LinkedHashMap<>();
-    values.put(1000000000, "billion");
-    values.put(1000000, "million");
-    values.put(1000, "thousand");
-    values.put(100, "hundred");
-    values.put(10, "tens");
-    values.put(1, "ones");
-    values.forEach((key, value) -> sb.append(applyNumberRules(key, value, number)));
+
+    for (int i = 0; i < intValues.length; i++) {
+      sb.append(applyNumberRules(i, number));
+    }
 
     return sb.toString();
   }
