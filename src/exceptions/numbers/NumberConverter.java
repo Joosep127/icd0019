@@ -139,7 +139,7 @@ public class NumberConverter {
   }
 
   private String applyNumberRules(int key, String value, int number) {
-    number = number - (number / key * 10) * key * 10; // Gets rid of already checked numbers of numbers that are beyond
+    number = number - number / (key * 10) * key * 10; // Gets rid of already checked numbers of numbers that are beyond
                                                       // the range
     // of which I'm expected to turn in to strings
 
