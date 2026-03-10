@@ -44,7 +44,7 @@ public class NumberConverterTests {
   public void canConvertNumbersToEnglish() {
     NumberConverter converter = new NumberConverter("et");
 
-    assertThat(converter.numberInWords(654000)).isEqualTo("kuussada viiskümmend neli tuhat");
+    assertThat(converter.numberInWords(1000000)).isEqualTo("üks miljon");
   }
 
   @Test

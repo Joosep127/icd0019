@@ -155,6 +155,14 @@ public class NumberConverter {
     }
   }
 
+  private String getFullWord(String value, int digit) {
+    String fullWord = getProp(value);
+    if (fullWord == null) {
+      fullWord = digit == 1 ? getProp(value + "-singular") : getProp(value + "-plural");
+    }
+    return fullWord;
+  }
+
   private String applyNumberRules(int idx, int number) {
       if (intValues.length <= idx || number == 0 || skipFuture || !addingAfterDelim) {
           return "";
@@ -180,7 +188,7 @@ public class NumberConverter {
 
     String beforeDelim = getProp(value + "-before-delimiter", "");
     String afterDelim = addingAfterDelim ? getProp(value + "-after-delimiter", "") : "";
-    String fullWord = getProp(value);
+    String fullWord = getFullWord(value, digit);
     String prefix = fullWord != null ? "" : getProp(value + "-prefix", "");
     String suffix = fullWord != null ? fullWord : getProp(value + "-suffix", "");
 
