@@ -139,26 +139,27 @@ public class NumberConverter {
   }
 
   private String applyNumberRules(int idx, int number) {
+      if (intValues.length <= idx) {
+          return "";
+      }
     int key = intValues[idx];
     String value = strValues[idx];
 
     int previous = idx == 0 ? 0 : intValues[idx-1];
     if (idx != 0) {
-      number -= number / previous * previous; // Gets rid of already checked numbers of numbers that are beyond
-      // the range
-      // of which I'm expected to turn in to strings
+      number -= number / previous * previous;
+    }
+    if (number == 0) {
+        skipFuture = true;
     }
 
     if (skipFuture || !addingAfterDelim) {
       return "";
     }
-    if (number == 0) {
-      skipFuture = true;
-    }
 
     int digit = number / key;
     if (digit == 0) {
-      return "";
+      return applyNumberRules(idx+1, number);
     }
     addingAfterDelim = number != digit * key;
 
@@ -178,14 +179,18 @@ public class NumberConverter {
 
     int[] exception = checkExpectation(number);
 
-    if (exception.length == 0) {
-      if (digit > 10) {
-        return applyPrefixSuffixAndDelimiters(sufpre, deLims, numberInWords(digit));
-      }
-      return applyPrefixSuffixAndDelimiters(sufpre, deLims, getProp(str(digit)));
+    if (exception.length != 0) {
+        sufpre[1] = "";
+        return applyPrefixSuffixAndDelimiters(sufpre, deLims, getProp(str(exception[0]))) + applyNumberRules(idx+1, exception[1]);
     }
-    sufpre[1] = "";
-    return applyPrefixSuffixAndDelimiters(sufpre, deLims, getProp(str(exception[0])));
+    String subWord;
+    if (str(digit).length() != 1) {
+        NumberConverter converter = new NumberConverter(lang);
+        subWord = converter.numberInWords(digit);
+    } else {
+        subWord = getProp(str(digit));
+    }
+    return applyPrefixSuffixAndDelimiters(sufpre, deLims, subWord) + applyNumberRules(idx+1, number);
   }
 
   public String numberInWords(int number) {
@@ -196,18 +201,12 @@ public class NumberConverter {
       return getNthLine(number);
     }
 
-    if (number == 0) {
-      return getProp("0");
-    }
-
     addingAfterDelim = true;
     skipFuture = false;
 
     StringBuilder sb = new StringBuilder();
 
-    for (int i = 0; i < intValues.length; i++) {
-      sb.append(applyNumberRules(i, number));
-    }
+    sb.append(applyNumberRules(0, number));
 
     return sb.toString();
   }

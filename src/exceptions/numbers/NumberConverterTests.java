@@ -44,6 +44,8 @@ public class NumberConverterTests {
   public void canConvertNumbersToEnglish() {
     NumberConverter converter = new NumberConverter("et");
 
+    assertThat(converter.numberInWords(654)).isEqualTo("kuussada viiskümmend neli");
+
     assertThat(converter.numberInWords(654000)).isEqualTo("kuussada viiskümmend neli tuhat");
   }
 
