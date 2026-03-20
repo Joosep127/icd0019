@@ -1,181 +1,164 @@
-Erindid
+##Pärimine
 
-Tõstke kõik failid, mis on kataloogis src/exceptions oma Github'i 
-reposse (icd0019) kataloogi src/exceptions.
+Tõstke kõik failid, mis on kataloogis src/inheritance/analyser oma 
+Github'i reposse (icd0019) kataloogi src/inheritance/analyser.
 
 Veenduge, et kood kompileerub.
 
 Kui valite Idea-s Build menüüst -> Rebuild project peaks tulema teade 
 "Compilation completed successfully ..."
 
-1. Ülesande mõte on kirjutada kood, mis käitub korrektselt ka vea olukorras
-   ja aru saada, kuidas sellist koodi testida.
+1. Paketis inheritance.constructor on mõned klassid. Kasutage klassi Runner 
+   ja looge nendest klassidest isendid. Jälgige millised konstruktorid 
+   käivituvad. Proovige läbi järgmised juhud:
 
-   Kirjutage lõpuni klassis exceptions.basic.Code meetod readDataFrom().
+   new Car();
    
-   Meetod peab sissetuleva FakeFile tüüpi argumendi
-   - avama (open)
-   - sellest lugema (read)
-   - ja selle sulgema (close)
-   
-   Kui lugemisel juhtub viga, peaks meetod tagastama "someDefaultValue" ja
-   fail peab suletud saama.
-   
-   Koodi testimiseks on samas paketis asuv klass TryCatchSampleTests.java.
-   Vea olukordade testimine päris faili abil on tülikas ja sellepärst on
-   selles koodis faili simuleeritud. Testimise eesmärgil on loodud
-   klass FakeFile, mis võimaldab meil oma koodi veaolukordi testida.
+   new Car("123 ABC");
 
-2. Klassis exceptions.basic.Code on meetod minimumElement(), mis leiab 
-   massiivist väikseima elemendi.
-   
-   See, et meetod tagastab tühja sisendmassiivi puhul nulli, on halb lahendus.
-   
-   Muutke käitumist nii, et tühja massiivi või null-i puhul viskaks 
-   meetod erindi (IllegalArgumentException).
-   
-   Kirjutage klassi MinimumElementTests test mõlema juhu kontrollimiseks.
+   Looge klass Raven, mis laiendab klassi Bird. Tehke isend vastloodud 
+   klassist: new Raven();
 
-3. Klassis exceptions.basic.Code on meetod containsSingleLetters().
+2. Paketis inheritance.stack on klass LoggingStack, mis laiendab 
+   olemasolevat Java kollektsiooni Stack.
+   
+   LoggingStack pärib ülemklassilt meetodid push() ja pop(), mille 
+   kasutamise näide on klassis LoggingStackTest.java.
+   
+   Kirjutage need meetodid üle selliselt, et nende väljakutsumisel 
+   prinditakse konsooli teade nende meetodite käivitamise kohta. Muus 
+   osas peab meetodi käitumine samaks jääma.
+   
+   Lisage klassile LoggingStack meetod pushAll(), mis lisab mitu argumenti 
+   korraga. Nt. pushAll(1, 2, 3) lisab kõik kolm argumeti.
+   
+   Meetodi deklaratsioon on "public void pushAll(Integer... numbers)".
 
-   Selles meetodis on sobimatu try/catch konstruktsioon. Meetodis on ka viga, 
-   mis avaldub, kui sisend on null.
+   "Integer..." tähendab siin 0 kuni mitu Integer tüüpi argumenti.
 
-   Tehke see containsSingleLetters() meetod korda. 
+3. Paketis inheritance.calc on klass PayCalculator, mis arvutab töötatud 
+   aja põhjal töötasu. See kalkulaator arvestab ka sellega, et tulumaks 
+   on 22% ja võtab selle tasust maha.
    
-   Koodi testimiseks on klass BadTryCatchTest.java.
-   
-4. Selle ülesande mõte on näidata, kuidas kasutada erindeid info vahetuseks 
-   programmi erinevate osade vahel.
+   Meil oleks lisaks vaja sellist kalkulaatorit, mis tulumaksu maha ei 
+   arvutaks. Failis TaxFreePayCalculator.java on selle klassi tegemist 
+   alustatud. Kirjutage see lõpuni, et kõik klassis CalculatorTest olevad 
+   testid tööle hakkaksid.
 
-   Paketis exceptions.channel on klass Program. See programm peaks arvutama 
-   sisendi ja etteantud konfiguratsiooni põhjal tulemuse ja selle väljastama. 
-   Praegu töötab programm vaid juhul, kui mingit viga ei tekki.
+   Staatilisi muutujaid üle kirjutada ei saa. Seega peate muutma pisut 
+   ka klassi PayCalculator, lisades sinna meetodi, läbi mille maksumäära
+   küsite. Selle lisatud meetodi saate hiljem alamklassis üle kirjutada.
 
-   Arvutuseks vajaliku konfiguratsiooni andmed tulevad klassist ConstantProvider. 
-   Selles on meetod getMultiplier(), mis üldjuhul tagastab mingi konstandi.
-   Antud juhul on konkreetne arvutus ebaoluline ja tähelepanu on veatöötlusel.
+4. Paketis inheritance.sender on klassid EmailLetterSender ja SmsLetterSender.
+   Need klassid konstrueerivad kirja ja saadavad selle läbi sms-i või email-i.
    
-   Et kontrollida, kas meie kood töötab korrektselt ka vigade korral, on 
-   ConstantProvider klassis tehtud lisameetodid, mis võimaldavad selle käitumist 
-   juhtida. See käitumine on dokumenteeritud klassis ConstantProviderTests.
-   
-   Lisage programmile järgmine veahalduse loogika. 
-   
-   Kui ConstantProvider.getMultiplier() viskab erindi MissingConstantException,
-   siis peaks programm väljastama "### Error: Constant is missing ###"
-   Selle sõne saate meedodiga formatError("Constant is missing").
-   
-   Selle olukorra proovimiseks on klassis exceptions.ProgramTests meetod
-   handlesMissingConstantException().   
-   
-   Kui ConstantProvider.getMultiplier() viskab erindi CorruptConfigurationException,
-   siis peaks programm väljastama "### Error: Configuration file is corrupt ###"
-   Selle sõne saate meedodiga formatError("Configuration file is corrupt").
-   
-   Kui ConstantProvider.getMultiplier() viskab erindi IOException,
-   siis peaks programm väljastama "### Error: can't find configuration file ###"
-   Selle sõne saate meedodiga formatError(e.getMessage()).
-   
-   Kontrollitud erindeid samal viisil simuleerida ei saa, seega viimase juhu 
-   testimiseks peatete calculate() meetodis provider.getMultiplier() asemele 
-   kirjutama provider.getMultiplier2();
-   
-5. Paketis exceptions.wrap on klass DirectoryListPrinter meetodiga printDirectoryList().
-   
-   Meetodi DirectoryListPrinter.getDirectoryFileList() deklaratsioonis on 
-   märgitud "throws IOException" ja seega peab sama märke tegema ka 
-   meetodistes, mis seda omakorda kasutavad.
-   
-   Kasutage meetodis getDirectoryFileList() erindite mähkimist (wrapping)
-   selleks, et saaks kõigi meetodite deklaratsioonidest "throws IOException"
-   eemaldada. 
+   Nendel klassidel on suur hulk ühist koodi. Tehke nendele ühine abstraktne
+   ülemklass, mis sisaldaks ühisosa.
 
-6. Paketis exceptions.translate on klass ConfigurationLoader meetodiga 
-   loadConfiguration(). Meedodi käivitamiseks on klass ConfigurationLoaderTests.
+5. NB! Selle ülesande juures on kõige olulisem pärimise korrektne kasutamine 
+   ja duplikatsiooni vältimine. Loogika on siin üsna lihtne ja õige vastuse 
+   saamine ei ole veel ülesande korrektne lahendamine.
 
-   Kui konfiguratsiooni lugemine ebaõnnestub teadatakse meile sellest erindiga.
-   
-   Soovime muuta programmi nii, et üldise erindi asemel visatakse 
-   rakendusespetsiifiline erind.
-   
-   Kui konfiguratsiooni faili ei eksisteeri peaks programm viskama 
-   erindi nimega ConfigurationException. Seda olukorda saate proovida määrates 
-   konfiguratsioonifaili asukohaks "./non-existent".
-   
-   Kui konfiguratsiooni fail viitab faili asemel kataloogile peaks programm 
-   viskama erinidi nimega InstallationException. Seda olukorda saate proovida 
-   määrates konfiguratsioonifaili asukohaks "./".
-   
-7. Kirjutage programm, mis võtab sisse täisarvulise numbri ja tagastab 
-   selle sõnadena. nt. 123 -> "ükssada kakskümmend kolm"
-   
-   Seda programmi võiks kasutada näiteks arvete automaatse genereerimise 
-   juures.
-   
-   Soovime, et programm ei oleks seotud konkreetse keelega ja hiljem 
-   oleks võimalik uusi keeli lisada.
-   
-   See paindlikus on lahendatud selliselt, et numbritega seotud sõnad on
-   programmi juurde kuuluvates failides võti-väärtus paaridena.
-   
-   Näiteks:
-       1=üks
-       2=kaks
-       teen=teist
-       tens-suffix=kümmend
+   Meil on olemas andmed müügi kohta. Iga kirje koosneb järgmistest 
+   komponentidest:
 
-   Esialgu peate programmi tööle saama eesti ja inglise keeles ning ühes 
-   kunstlikus keeles. Vastavad tõlke failid on ette antud.
+   - toote identifikaator
+   - müügi kuupäev
+   - ühe ühiku hind
+   - müüdud kogus
    
-   Kuna erinevates keeltes on numbreid tähistavate sõnade moodustamine 
-   erinev, siis soovime selle erinevuse samuti tõlgetefaili abil lahendada.
+   Müügi info põhjal soovime arvutada müügi kogutulu ja müügi kogutulu 
+   konkreetse toote kohta.
    
-   Näiteks eesti keeles on "üksteist" moodustatav sama reegli järgi, 
-   nagu näiteks "kolmteist". Inglise keeles on "eleven" ebareeglipärane.
+   Müügi andmed on koos käibemaksuga aga soovime teada kogutulu ilma 
+   käibemaksuta.
    
-   Seega kui miski on ebareeglipärane, siis peab selle jaoks eraldi 
-   tõlge olema. Kui programm mingi numbri jaoks tõlget ei leia, siis 
-   moodustab ta selle üldise reegli alusel.
+   Ettevõte tegutseb Eestis, Soomes ja laeval (tax free). Meil oleks vaja
+   kolme kalkulaatorit, mis arvestaks vastavas piirkonnas kehtinud käibemaksu 
+   määraga müügi hetkel.
    
-   nt. 11 = "üks" + "teist", 12 = "kaks" + "teist", jne.
-   
-   Programm peaks teatud vigadest teatama erindi viskamisega. Need 
-   olukorrad on kirjeldatud programmi testides.
+   Eesti käibemaksu määrad on (kehtivuse algus, protsent)<br>
+     01.07.2009 20% <br>
+     01.01.2024 22% <br>
+     01.07.2025 24% <br>
 
-   Kvaliteetne programm on selline, mis on võimalikult paindlik ja 
-   milles on võimalikult vähe duplikatsiooni.
+   Soome käibemaksu määrad on  
+     01.06.1994 22.0% <br>
+     01.07.2010 23.0% <br>
+     01.01.2013 24.0% <br>
+     01.09.2024 25.5% <br>
    
-   Keele failidest info lugemise näide on failis ReadPropertiesFileExample.java.
+   Tax free piirkonnas käibemaks puudub.    
    
-   Numbrite osadeks jagamise näide:
+   Valmis on tehtud 3 klassi vastavate kalkulaatorite jaoks. Kuna kalkulaatoritel
+   saab olema suur hulk ühisosa, siis tehke neile ühine abstraktne ülemklass,
+   millesse see ühisosa läheb. Spetsiifilistes klassides peaks olema vaid 
+   "protected" meetodid minimaalse koodiga.
+   
+   Abstraktne ülemklass peab olema suletud (sealed).
+   
+   Lisage kalkulaatoritesse võimalus kõige müüvamate toodete leidmiseks.
 
-       int number = 231;
-       int hundreds = number / 100; // jagamine täisarvu täpsusega
-       number -= hundreds * 100;    // eemalda sajad
-       int tens = number / 10;
-       number -= tens * 10;
-       int ones = number % 10;
+   getTop3PopularItems() - tagastab kolme kõige rohkem ühikud müünud toote 
+                           identifikaatorid.
 
-   Kui teie kood oskab teisendada numbreid nullist kuni 130ni saate 4 punkti 
-   ning kui see saab hakkama numbritega nullist kuni 1 miljardini, 
-   siis saate 6 punkti.
+   getLargestTotalSalesAmountForSingleItem() - tagastab kõige suurema müügituluga 
+                                         toote müügisumma (arvestamata käibemaksu).   
 
+   Koodi testimiseks on klass SalesAnalyserTest.
+   
    Selle ülesande kohta on ka koodi ülevaatuse võimalus. Kui esitate lahenduse 
-   tähtajaks, siis tähtaja möödudes on teil võimalik kahe teise tudengi 
+   tähtajaks, siis tähtaja möödudes on teil võimalik kellegi teise tudengi 
    tööd hinnata ja selle eest punkte saada. 
    
    Ülevaatuse leiate pärast tähtaja möödumist hindamissüsteemist ja selle 
    esitamiseks on aega 7 päeva.
 
    Ülevaatusel tuleb vastata kahele küsimusele.
-     - Kas koodis on kohti, mis on seotud konkreetse keelega (Nt. eesti keelega)?
-     - Kas kõik avatud ressursid saavad ka suletud?
+     - Kas spetsiifilistes klassides on vaid minimaalselt vajalik kood?
+     - Kas ülemklass on suletud (sealed)?
    
-8. Commit-ige muudatused ja push-ige need Bitbucket-isse. 
+   Aadressil https://github.com/mkalmo2/icd0019app on rakendus, mis illustreerib,
+   kuidas loodud koodi praktikas kasutada. Rakenduse kasutamiseks kopeerige
+   oma kood icd0019app projekti ja käivitage main() meetod klassis server.Server.
+   See käivitab lokaalse veebiserveri aadressil http://localhost:8080.
+   Sellelt aadressilt saate läbi brauseri tulemust vaadata.
+   
+6. Veenduge, et testid lähevad läbi.
     
-    Lisage commit-ile tag ex05.
+   Commit-ige muudatused ja push-ige need Github'i. 
     
-    Veenduge tulemuste lehelt, et tulemus on positiivne.
+   Lisage commit-ile tag ex06. 
+    
+   Veenduge tulemuste lehelt, et tulemus on positiivne. 
 
-Lahendused ja seletused 1-6 seletused 7: https://youtu.be/mpg2ccA_4AQ
+7. See ülesanne pole kohustuslik aga selle lahendamise eest on võimalik 
+   lisapunkte saada.
+
+   Paketis bonus.pager on klass SimplePager, mis näitab sellele 
+   sisendiks antud täisarve lehekülgede kaupa. See klass on valmis ja 
+   seda pole vaja muuta.
+   
+   Teie ülesanne on kirjutada lõpuni klass FilteringPager, mis kasutab 
+   sisendi saamiseks SimplePager klassi aga filtreerib selle väljundist 
+   välja null väärtused.
+   
+   FilteringPager klassi loomisel antakse ette SimplePager klassi objekt, 
+   kust andmeid võtta ja lehekülje suurus ehk mitu elementi korraga väljastada.
+   Meetodid getNextPage(), getCurrentPage() ja getPreviousPage() väljastavad 
+   SimplePager klassi väljundist loetud andmeid, millest on null väärtused 
+   eemaldatud.
+      
+   Kui saame hoida kogu sisendit mälus, siis on ülesanne lihtne ja see 
+   lahendus on klassis FilteringPagerWithMemory olemas. Teie ülesanne on 
+   lahendada probleem nii, et andmeid mälus ei hoita. Mälus võib hoida 
+   ainult kuni kolme täisarv tüüpi muutujat. 
+   Seega saame hoida infot nt. selle kohta kui palju infot on sisendist loetud.
+   
+   Töö testimiseks on klass FilteringPagerTests.
+   
+   Commit-ige muudatused ja push-ige need Github'i.
+   
+   Lisage commit-ile tag b1.
+
+Seletused (1-5) ja lahendused (1-4): https://youtu.be/7fmLSfHO7b4
