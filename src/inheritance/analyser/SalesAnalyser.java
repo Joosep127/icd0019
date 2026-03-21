@@ -18,8 +18,8 @@ public class SalesAnalyser {
   }
 
   protected void setDatesTaxes(LocalDate[] dates, double[] taxes) {
-    this.dates = dates;
-    this.taxes = taxes;
+    this.dates = dates.clone();
+    this.taxes = taxes.clone();
   }
 
   private int getTaxIndex(SalesRecord record) {
@@ -39,7 +39,7 @@ public class SalesAnalyser {
     for (SalesRecord record : records) {
       index = getTaxIndex(record);
       tax = index != -1 ? taxes[index] : 0;
-      total = (record.productPrice() * record.itemsSold() / (1 + (double) (tax / 100)));
+      total = (record.productPrice() * record.itemsSold() / (1 + (tax / 100)));
       if (!output.containsKey(record.productId())) {
         output.put(record.productId(), total);
       } else {
@@ -82,12 +82,13 @@ public class SalesAnalyser {
     }
 
     // Step 3: Sort
-    List<String> result = freq.keySet()
+    List<String> result = freq.keySet()jetbrains-toolbox 
         .stream()
         .sorted((a, b) -> {
           int freqCompare = Integer.compare(freq.get(b), freq.get(a)); // DESC
-          if (freqCompare != 0)
+          if (freqCompare != 0) {
             return freqCompare;
+          }
 
           // If same frequency → later one first
           return Integer.compare(lastIndex.get(b), lastIndex.get(a));
@@ -98,15 +99,15 @@ public class SalesAnalyser {
   }
 
   public Double getLargestTotalSalesAmountForSingleItem() {
-    Double highest_value = -1.0;
+    Double highestValue = -1.0;
 
     for (Double value : getTotalSalesHelper().values()) {
-      if (value > highest_value) {
-        highest_value = value;
+      if (value > highestValue) {
+        highestValue = value;
       }
     }
 
-    return highest_value;
+    return highestValue;
   }
 
   protected static LocalDate getDate(String date) {
