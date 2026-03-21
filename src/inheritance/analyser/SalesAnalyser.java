@@ -17,10 +17,7 @@ public class SalesAnalyser {
     this.records = records;
   }
 
-  protected void setDatesTaxes(LocalDate[] dates, double[] taxes) throws IllegalArgumentException {
-    if (dates.length != taxes.length) {
-      throw new IllegalArgumentException("Taxes and Dates lengths, are not equal");
-    }
+  protected void setDatesTaxes(LocalDate[] dates, double[] taxes) {
     this.dates = dates;
     this.taxes = taxes;
   }
