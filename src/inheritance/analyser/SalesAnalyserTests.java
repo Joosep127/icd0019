@@ -61,6 +61,8 @@ public class SalesAnalyserTests {
     public void findsTop3MostPopularSalesItems() {
         FinnishSalesAnalyser analyser = new FinnishSalesAnalyser(records);
 
+        System.out.println(analyser.getTop3PopularItems());
+
         assertThat(analyser.getTop3PopularItems())
                 .containsExactlyInAnyOrder("i1", "i3", "i5");
     }
