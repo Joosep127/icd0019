@@ -5,9 +5,7 @@ import java.util.List;
 
 public class FilteringPager {
 
-    @SuppressWarnings("PMD.UnusedPrivateField")
     private final SimplePager dataSource;
-    @SuppressWarnings("PMD.UnusedPrivateField")
     private final int pageSize;
     private int currentPage = 1;
 
@@ -31,8 +29,7 @@ public class FilteringPager {
         int expectedBefore = (currentPage-1)*pageSize;
         int itemsSaved = 0;
 
-        for (int i = 0; i < data.size(); i++) {
-            String str = data.get(i);
+        for (String str : data) {
             if (str == null) {
                 continue;
             }
@@ -59,17 +56,12 @@ public class FilteringPager {
     }
 
     public boolean hasNextPage() {
-        List<String> data = dataSource.getData();
-
         int itemCount = 0;
-
-        for (int i = 0; i < data.size(); i++) {
-            String str = data.get(i);
+        for (String str : dataSource.getData()) {
             if (str != null) {
                 itemCount++;
             }
         }
-
         return currentPage*pageSize < itemCount;
     }
 
