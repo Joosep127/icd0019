@@ -31,4 +31,8 @@ public class SimplePager {
         int endPos = Math.min(startPos + pageSize, data.size());
         return data.subList(startPos, endPos);
     }
+
+    protected List<String> getData() {
+        return data;
+    }
 }

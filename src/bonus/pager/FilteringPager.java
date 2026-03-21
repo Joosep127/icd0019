@@ -1,5 +1,6 @@
 package bonus.pager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FilteringPager {
@@ -8,6 +9,7 @@ public class FilteringPager {
     private final SimplePager dataSource;
     @SuppressWarnings("PMD.UnusedPrivateField")
     private final int pageSize;
+    private int currentPage = 1;
 
     public FilteringPager(SimplePager dataSource, int pageSize) {
         this.dataSource = dataSource;
@@ -15,26 +17,67 @@ public class FilteringPager {
     }
 
     public List<String> getNextPage() {
-        throw new RuntimeException("not implemented yet");
+        if (hasNextPage()) {
+            currentPage++;
+            return getCurrentPage();
+        }
+        throw new IllegalStateException("No Next Page.");
     }
 
     public List<String> getCurrentPage() {
-        throw new RuntimeException("not implemented yet");
+        List<String> output = new ArrayList<>();
+        List<String> data = dataSource.getData();
+
+        int expectedBefore = (currentPage-1)*pageSize;
+        int itemsSaved = 0;
+
+        for (int i = 0; i < data.size(); i++) {
+            String str = data.get(i);
+            if (str == null) {
+                continue;
+            }
+            if (expectedBefore != 0) {
+                expectedBefore--;
+                continue;
+            }
+
+            if (itemsSaved != pageSize) {
+                itemsSaved++;
+                output.add(str);
+            }
+        }
+
+        return output;
     }
 
     public List<String> getPreviousPage() {
-        throw new RuntimeException("not implemented yet");
+        if (hasPreviousPage()) {
+            currentPage--;
+            return getCurrentPage();
+        }
+        throw new IllegalStateException("No Previous Page.");
     }
 
     public boolean hasNextPage() {
-        throw new RuntimeException("not implemented yet");
+        List<String> data = dataSource.getData();
+
+        int itemCount = 0;
+
+        for (int i = 0; i < data.size(); i++) {
+            String str = data.get(i);
+            if (str != null) {
+                itemCount++;
+            }
+        }
+
+        return currentPage*pageSize < itemCount;
     }
 
     public boolean hasPreviousPage() {
-        throw new RuntimeException("not implemented yet");
+        return currentPage > 1;
     }
 
     public int getCurrentPageNo() {
-        throw new RuntimeException("not implemented yet");
+        return currentPage - 1;
     }
 }
