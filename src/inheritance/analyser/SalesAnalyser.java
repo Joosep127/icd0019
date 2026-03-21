@@ -97,7 +97,7 @@ public class SalesAnalyser {
         })
         .collect(Collectors.toList());
 
-    System.out.println(result);
+    return result.subList(0, Math.min(3, result.size()));
   }
 
   public Double getLargestTotalSalesAmountForSingleItem() {
