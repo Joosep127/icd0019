@@ -82,7 +82,7 @@ public class SalesAnalyser {
     }
 
     // Step 3: Sort
-    List<String> result = freq.keySet()jetbrains-toolbox 
+    List<String> result = freq.keySet()
         .stream()
         .sorted((a, b) -> {
           int freqCompare = Integer.compare(freq.get(b), freq.get(a)); // DESC
