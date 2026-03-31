@@ -12,6 +12,7 @@ public class NumberString implements Comparable<NumberString> {
         streaks = getStreakList(input.chars()
                 .mapToObj(c -> (char) c)
                 .collect(Collectors.toList()));
+        streaks.sort(new LengthAndElementReverseComparator());
     }
 
     public String initialValue() {
@@ -30,7 +31,6 @@ public class NumberString implements Comparable<NumberString> {
                 output.add(new ArrayList<>(List.of(c)));
             }
         }
-        output.sort(new LengthAndElementReverseComparator());
         return output;
     }
 
