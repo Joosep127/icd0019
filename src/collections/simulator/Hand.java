@@ -203,9 +203,6 @@ public class Hand implements Iterable<Card>, Comparable<Hand> {
         if (!dirty) {
             return;
         }
-        if (cards.size() > 5) {
-            removeWorst();
-        }
 
         boolean isFlush = Arrays.stream(suitCounts).anyMatch(c -> c == cards.size());
         boolean isStraight = isStraight();
