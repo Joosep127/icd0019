@@ -15,17 +15,55 @@ public class Hand implements Iterable<Card>, Comparable<Hand> {
 
     public void addCard(Card card) {
         cards.add(card);
-        int r = card.getValue().ordinal();
-        int s = card.getSuit().ordinal();
-        rankCounts[r]++;
-        suitCounts[s]++;
+        rankCounts[card.getValue().ordinal()]++;
+        suitCounts[card.getSuit().ordinal()]++;
+        dirty = true;
+    }
+
+    public void addCards(Card[] cards) {
+        for (Card c: cards) {
+            addCard(c);
+        }
+    }
+
+    public void addCards(List<Card> cards) {
+        for (Card c: cards) {
+            addCard(c);
+        }
+    }
+
+    public void setCard(Card[] newCards) {
+        Arrays.fill(rankCounts, 0);
+        Arrays.fill(suitCounts, 0);
+        cards.clear();
+
+        for (Card card : newCards) {
+            cards.add(card);
+            rankCounts[card.getValue().ordinal()]++;
+            suitCounts[card.getSuit().ordinal()]++;
+        }
+
+        dirty = true;
+    }
+
+    public void setCard(List<Card> newCards) {
+        Arrays.fill(rankCounts, 0);
+        Arrays.fill(suitCounts, 0);
+        cards.clear();
+
+        for (Card card : newCards) {
+            cards.add(card);
+            rankCounts[card.getValue().ordinal()]++;
+            suitCounts[card.getSuit().ordinal()]++;
+        }
+
         dirty = true;
     }
 
     public void sortCards() {
         cards.sort(Collections.reverseOrder());
     }
-    private boolean isStraight() {
+    public boolean isStraight(int i) {
         boolean isStraight = false;
 
         int consecutive = 0;
@@ -46,6 +84,33 @@ public class Hand implements Iterable<Card>, Comparable<Hand> {
         return isStraight;
     }
 
+    public boolean isStraight() {
+        if (cards.size() < 5) return false;
+
+        int[] rankCounts = new int[13];
+        for (Card c : cards) {
+            rankCounts[c.getValue().ordinal()]++;
+        }
+
+        for (int start = 0; start <= 8; start++) { // 0..8 => last possible straight starts at 10
+            boolean straight = true;
+            for (int i = 0; i < 5; i++) {
+                if (rankCounts[start + i] == 0) {
+                    straight = false;
+                    break;
+                }
+            }
+            if (straight) return true;
+        }
+
+        // Check for Ace-low straight (A-2-3-4-5)
+        if (rankCounts[12] > 0 && rankCounts[0] > 0 && rankCounts[1] > 0 && rankCounts[2] > 0 && rankCounts[3] > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
     private TreeMap<Integer, List<Integer>> buildCountMap() {
         TreeMap<Integer, List<Integer>> countMap = new TreeMap<>(Collections.reverseOrder());
         for (int r = 12; r >= 0; r--) {
@@ -64,6 +129,55 @@ public class Hand implements Iterable<Card>, Comparable<Hand> {
             ranks.sort(Collections.reverseOrder());
             ns.addAll(ranks);
         }
+    }
+
+    public static HandType getHT(boolean isFlush, boolean isStraight,
+                                 int[] rankCounts, int[] suitCounts) {
+        int pairs = 0;
+        int trips = 0;
+        int quads = 0;
+
+        for (int count : rankCounts) {
+            switch (count) {
+                case 2 -> pairs++;
+                case 3 -> trips++;
+                case 4 -> quads++;
+            }
+        }
+
+        if (isFlush && isStraight) {
+            return HandType.STRAIGHT_FLUSH;
+        }
+
+        if (quads == 1) {
+            return HandType.FOUR_OF_A_KIND;
+        }
+
+        if (trips == 1 && pairs == 1) {
+            return HandType.FULL_HOUSE;
+        }
+
+        if (isFlush) {
+            return HandType.FLUSH;
+        }
+
+        if (isStraight) {
+            return HandType.STRAIGHT;
+        }
+
+        if (trips == 1) {
+            return HandType.TRIPS;
+        }
+
+        if (pairs == 2) {
+            return HandType.TWO_PAIRS;
+        }
+
+        if (pairs == 1) {
+            return HandType.ONE_PAIR;
+        }
+
+        return HandType.HIGH_CARD;
     }
 
     private void determineHandType(boolean isFlush, boolean isStraight, TreeMap<Integer, List<Integer>> countMap) {
@@ -107,6 +221,9 @@ public class Hand implements Iterable<Card>, Comparable<Hand> {
         if (!dirty) {
             return;
         }
+        if (cards.size() > 5) {
+            removeWorst();
+        }
 
         boolean isFlush = Arrays.stream(suitCounts).anyMatch(c -> c == cards.size());
         boolean isStraight = isStraight();
@@ -118,6 +235,10 @@ public class Hand implements Iterable<Card>, Comparable<Hand> {
         determineHandType(isFlush, isStraight, countMap);
 
         dirty = false;
+    }
+
+    private void removeWorst() {
+
     }
 
     public HandType getHandType() {
@@ -135,6 +256,10 @@ public class Hand implements Iterable<Card>, Comparable<Hand> {
 
     public int size() {
         return cards.size();
+    }
+
+    public List<Card> getCards() {
+        return cards;
     }
 
     @Override
