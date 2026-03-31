@@ -25,7 +25,7 @@ public class Hand implements Iterable<Card>, Comparable<Hand> {
     public void sortCards() {
         cards.sort(Collections.reverseOrder());
     }
-    private boolean getStraight() {
+    private boolean isStraight() {
         boolean isStraight = false;
 
         int consecutive = 0;
@@ -40,10 +40,8 @@ public class Hand implements Iterable<Card>, Comparable<Hand> {
                 consecutive = 0;
             }
         }
-        if (!isStraight && rankCounts[12] == 1) {
-            if (rankCounts[0] == 1 && rankCounts[1] == 1 && rankCounts[2] == 1 && rankCounts[3] == 1) {
-                isStraight = true;
-            }
+        if (!isStraight && rankCounts[12] == 1 && rankCounts[0] == 1 && rankCounts[1] == 1 && rankCounts[2] == 1 && rankCounts[3] == 1) {
+            isStraight = true;
         }
         return isStraight;
     }
@@ -111,7 +109,7 @@ public class Hand implements Iterable<Card>, Comparable<Hand> {
         }
 
         boolean isFlush = Arrays.stream(suitCounts).anyMatch(c -> c == cards.size());
-        boolean isStraight = getStraight();
+        boolean isStraight = isStraight();
 
         TreeMap<Integer, List<Integer>> countMap = buildCountMap();
 
