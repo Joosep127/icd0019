@@ -175,6 +175,6 @@ public class Simulator {
             }
         }
 
-        return result / iterations * 104;
+        return result / iterations * 103.5;
     }
 }
