@@ -14,83 +14,107 @@ public class Simulator {
 
     public Map<HandType, Double> calculateProbabilities() {
         int[] ht = new int[HandType.values().length];
+        int[] masterDeck = createMasterDeck();
+        int[] deck = new int[52];
+
+        for (int i = 0; i < iterations; i++) {
+            simulateHand(masterDeck, deck, ht);
+        }
+
+        return computeResults(ht);
+    }
+
+    private int[] createMasterDeck() {
+        int[] deck = new int[52];
+        for (int i = 0; i < 52; i++) {
+            deck[i] = i;
+        }
+        return deck;
+    }
+
+    private void simulateHand(int[] masterDeck, int[] deck, int[] ht) {
+        boolean isFlush = true;
+        boolean isStraight = false;
+        int defSuit = -1;
 
         int[] rankCounts = new int[13];
         int[] suitCounts = new int[4];
 
-        boolean isStraight;
-        boolean isFlush;
-        int defSuit;
+        System.arraycopy(masterDeck, 0, deck, 0, 52);
 
+        drawHand(deck, rankCounts, suitCounts);
+        defSuit = rankCountsFlushCheck(deck, rankCounts, suitCounts);
+
+        isFlush = checkFlush(deck, defSuit);
+        isStraight = checkStraight(rankCounts);
+
+        HandType handType = Hand.getHT(isFlush, isStraight, rankCounts, suitCounts);
+        ht[handType.ordinal()]++;
+    }
+
+    private void drawHand(int[] deck, int[] rankCounts, int[] suitCounts) {
         ThreadLocalRandom rnd = ThreadLocalRandom.current();
+        for (int y = 0; y < 5; y++) {
+            int j = rnd.nextInt(y, 52);
+            swap(deck, y, j);
 
-        int[] masterDeck = new int[52];
-        for (int i = 0; i < 52; i++) masterDeck[i] = i;
-        int[] deck = new int[52];
+            int card = deck[y];
+            int rank = card % 13;
+            int suit = card / 13;
 
-        for (int i = 0; i < iterations; i++) {
-            isStraight = false;
-            isFlush = true;
-            defSuit = -1;
-
-            rankCounts = new int[13];
-            suitCounts = new int[4];
-
-            System.arraycopy(masterDeck, 0, deck, 0, 52);
-
-            for (int y = 0; y < 5; y++) {
-                int j = rnd.nextInt(y, 52);
-                int temp = deck[y];
-                deck[y] = deck[j];
-                deck[j] = temp;
-
-                int card = deck[y];
-                int rank = card % 13;
-                int suit = card / 13;
-
-                if (y == 0) defSuit = suit;
-                else if (defSuit != suit) isFlush = false;
-
-                rankCounts[rank]++;
-                suitCounts[suit]++;
-            }
-
-            for (int j = 0; j <= 8; j++) {
-                if (rankCounts[j] > 0 &&
-                        rankCounts[j + 1] > 0 &&
-                        rankCounts[j + 2] > 0 &&
-                        rankCounts[j + 3] > 0 &&
-                        rankCounts[j + 4] > 0) {
-                    isStraight = true;
-                    break;
-                }
-            }
-
-            if (!isStraight &&
-                    rankCounts[12] > 0 &&
-                    rankCounts[0] > 0 &&
-                    rankCounts[1] > 0 &&
-                    rankCounts[2] > 0 &&
-                    rankCounts[3] > 0) {
-                isStraight = true;
-            }
-
-            ht[Hand.getHT(isFlush, isStraight, rankCounts, suitCounts).ordinal()]++;
-
+            rankCounts[rank]++;
+            suitCounts[suit]++;
         }
+    }
 
+    private int rankCountsFlushCheck(int[] deck, int[] rankCounts, int[] suitCounts) {
+        int defSuit = deck[0] / 13;
+        for (int i = 1; i < 5; i++) {
+            if (deck[i] / 13 != defSuit) {
+                return -1;
+            }
+        }
+        return defSuit;
+    }
+
+    private boolean checkFlush(int[] deck, int defSuit) {
+        return defSuit != -1;
+    }
+
+    private boolean checkStraight(int[] rankCounts) {
+        for (int j = 0; j <= 8; j++) {
+            if (rankCounts[j] > 0 &&
+                    rankCounts[j + 1] > 0 &&
+                    rankCounts[j + 2] > 0 &&
+                    rankCounts[j + 3] > 0 &&
+                    rankCounts[j + 4] > 0) {
+                return true;
+            }
+        }
+        return rankCounts[12] > 0 &&
+                rankCounts[0] > 0 &&
+                rankCounts[1] > 0 &&
+                rankCounts[2] > 0 &&
+                rankCounts[3] > 0;
+    }
+
+    private void swap(int[] arr, int i, int j) {
+        int temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+
+    private Map<HandType, Double> computeResults(int[] ht) {
         Map<HandType, Double> results = new EnumMap<>(HandType.class);
-
         HandType[] types = HandType.values();
 
         for (int i = 0; i < ht.length; i++) {
-            double percentage = (double) ht[i] / iterations * 100;
+            double percentage = ((double) ht[i] / iterations) * 100;
             System.out.println(types[i] + ": " + percentage + "%");
-            results.put(HandType.values()[i], percentage);
+            results.put(types[i], percentage);
         }
 
         return results;
-
     }
 
     public double getWinningOdds(Hand player1hand, Hand player2hand) {
@@ -151,6 +175,6 @@ public class Simulator {
             }
         }
 
-        return (result / iterations) * 104;
+        return result / iterations * 104;
     }
 }

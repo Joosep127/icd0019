@@ -26,26 +26,6 @@ public class Hand implements Iterable<Card>, Comparable<Hand> {
         }
     }
 
-    public void addCards(List<Card> cards) {
-        for (Card c: cards) {
-            addCard(c);
-        }
-    }
-
-    public void setCard(Card[] newCards) {
-        Arrays.fill(rankCounts, 0);
-        Arrays.fill(suitCounts, 0);
-        cards.clear();
-
-        for (Card card : newCards) {
-            cards.add(card);
-            rankCounts[card.getValue().ordinal()]++;
-            suitCounts[card.getSuit().ordinal()]++;
-        }
-
-        dirty = true;
-    }
-
     public void setCard(List<Card> newCards) {
         Arrays.fill(rankCounts, 0);
         Arrays.fill(suitCounts, 0);
@@ -60,29 +40,26 @@ public class Hand implements Iterable<Card>, Comparable<Hand> {
         dirty = true;
     }
 
-    public void sortCards() {
-        cards.sort(Collections.reverseOrder());
-    }
-    public boolean isStraight(int i) {
-        boolean isStraight = false;
-
-        int consecutive = 0;
-        for (int r = 0; r < 13; r++) {
-            if (rankCounts[r] > 0) {
-                consecutive++;
-                if (consecutive == cards.size()) {
-                    isStraight = true;
-                    break;
-                }
-            } else {
-                consecutive = 0;
-            }
-        }
-        if (!isStraight && rankCounts[12] == 1 && rankCounts[0] == 1 && rankCounts[1] == 1 && rankCounts[2] == 1 && rankCounts[3] == 1) {
-            isStraight = true;
-        }
-        return isStraight;
-    }
+//    public boolean isStraight(int i) {
+//        boolean isStraight = false;
+//
+//        int consecutive = 0;
+//        for (int r = 0; r < 13; r++) {
+//            if (rankCounts[r] > 0) {
+//                consecutive++;
+//                if (consecutive == cards.size()) {
+//                    isStraight = true;
+//                    break;
+//                }
+//            } else {
+//                consecutive = 0;
+//            }
+//        }
+//        if (!isStraight && rankCounts[12] == 1 && rankCounts[0] == 1 && rankCounts[1] == 1 && rankCounts[2] == 1 && rankCounts[3] == 1) {
+//            isStraight = true;
+//        }
+//        return isStraight;
+//    }
 
     public boolean isStraight() {
         if (cards.size() < 5) return false;
@@ -100,10 +77,11 @@ public class Hand implements Iterable<Card>, Comparable<Hand> {
                     break;
                 }
             }
-            if (straight) return true;
+            if (straight) {
+                return true;
+            }
         }
 
-        // Check for Ace-low straight (A-2-3-4-5)
         if (rankCounts[12] > 0 && rankCounts[0] > 0 && rankCounts[1] > 0 && rankCounts[2] > 0 && rankCounts[3] > 0) {
             return true;
         }
