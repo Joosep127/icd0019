@@ -33,9 +33,9 @@ public class Simulator {
     }
 
     private void simulateHand(int[] masterDeck, int[] deck, int[] ht) {
-        boolean isFlush = true;
-        boolean isStraight = false;
-        int defSuit = -1;
+        boolean isFlush;
+        boolean isStraight;
+        int defSuit;
 
         int[] rankCounts = new int[13];
         int[] suitCounts = new int[4];
@@ -109,7 +109,7 @@ public class Simulator {
         HandType[] types = HandType.values();
 
         for (int i = 0; i < ht.length; i++) {
-            double percentage = ((double) ht[i] / iterations) * 100;
+            double percentage = ht[i] / iterations * 100;
             System.out.println(types[i] + ": " + percentage + "%");
             results.put(types[i], percentage);
         }

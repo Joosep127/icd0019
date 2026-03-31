@@ -62,7 +62,9 @@ public class Hand implements Iterable<Card>, Comparable<Hand> {
 //    }
 
     public boolean isStraight() {
-        if (cards.size() < 5) return false;
+        if (cards.size() < 5) {
+            return false;
+        }
 
         int[] rankCounts = new int[13];
         for (Card c : cards) {
@@ -120,6 +122,8 @@ public class Hand implements Iterable<Card>, Comparable<Hand> {
                 case 2 -> pairs++;
                 case 3 -> trips++;
                 case 4 -> quads++;
+                case 0, 1 -> {}
+                default -> throw new IllegalArgumentException("Unexpected count: " + count);
             }
         }
 
@@ -213,10 +217,6 @@ public class Hand implements Iterable<Card>, Comparable<Hand> {
         determineHandType(isFlush, isStraight, countMap);
 
         dirty = false;
-    }
-
-    private void removeWorst() {
-
     }
 
     public HandType getHandType() {
