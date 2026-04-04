@@ -4,28 +4,28 @@ import java.util.*;
 
 
 public class ConnectionFinder {
-    Map<String, List<String>> connections = new HashMap<>();
+    Map<String, Set<String>> connections = new HashMap<>();
 
-    public void addAll(List<Connection> connections) {
-        for (Connection c : connections) {
+    public void addAll(List<Connection> connectionList) {
+        for (Connection c : connectionList) {
             add(c);
         }
     }
 
     public void add(Connection connection) {
-        connections.computeIfAbsent(connection.from(), k -> new ArrayList<>())
-                .add(connection.to());
+        String from = Objects.requireNonNull(connection.from());
+        String to = Objects.requireNonNull(connection.to());
 
-        connections.computeIfAbsent(connection.to(), k -> new ArrayList<>())
-                .add(connection.from());
+        connections.computeIfAbsent(from, k -> new HashSet<>()).add(to);
+        connections.computeIfAbsent(to, k -> new HashSet<>()).add(from);
     }
 
     public boolean hasConnection(String a, String b) {
-        if (a == null || b == null) {
+        if (!connections.containsKey(a) || !connections.containsKey(b)) {
             return false;
         }
 
-        List<String> minList;
+        Set<String> minList;
         String maxItem;
 
         if (connections.get(a).size() < connections.get(b).size()) {
@@ -44,49 +44,42 @@ public class ConnectionFinder {
         return connection != null;
     }
 
-    private Node extend(Queue<Node> queue, Set<String> seen, Set<String> goalSeen) {
-        Node node = queue.poll();
+    public List<String> expand(
+            HashSet<Node> aEndNodes,
+            HashSet<Node> bEndNodes,
+            HashSet<String> seenANames,
+            HashSet<String> seenBNames) {
 
-        if (node == null) {
-            return null;
-        }
+        HashSet<Node> newAEndNodes = new HashSet<>();
 
-        if (goalSeen.contains(node.name)) {
-            return node;
-        }
+        for (Node n : aEndNodes) {
+            for (String name : connections.get(n.name)) {
+                if (!seenANames.contains(name)) {
+                    if (seenBNames.contains(name)) {
+                        Node meetingNodeFromB = null;
+                        for (Node bNode : bEndNodes) {
+                            if (bNode.name.equals(name)) {
+                                meetingNodeFromB = bNode;
+                                break;
+                            }
+                        }
+                        List<String> pathA = n.history();
+                        List<String> pathB = meetingNodeFromB.history();
 
-        if (seen.contains(node.name)) {
-            return null;
-        }
-        seen.add(node.name);
+                        Collections.reverse(pathB);
 
-        ArrayList<String> newParents = new ArrayList<>(node.parents);
-        newParents.add(node.name);
-
-        for (String s : connections.get(node.name)) {
-            if (!seen.contains(s)) {
-                queue.add(new Node(s, newParents));
+                        pathB.addAll(pathA);
+                        return pathB;
+                    }
+                    newAEndNodes.add(new Node(name, n));
+                    seenANames.add(name);
+                }
             }
         }
 
-        return null;
-    }
+        aEndNodes.clear();
+        aEndNodes.addAll(newAEndNodes);
 
-    public List<String> deduceRoute(Node connectingNode, Queue<Node> queue, String goal) {
-        if (connectingNode.name.equals(goal)) {
-            return List.of(connectingNode.parents.getFirst(), goal);
-        }
-        for (Node n : queue) {
-            if (n.name.equals(connectingNode.name)) {
-                ArrayList<String> path = new ArrayList<>(n.parents);
-
-                ArrayList<String> other = new ArrayList<>(connectingNode.parents);
-                Collections.reverse(other);
-
-                path.addAll(other);
-                return path;
-            }
-        }
         return null;
     }
 
@@ -99,30 +92,28 @@ public class ConnectionFinder {
             return List.of(a, b);
         }
 
-        Queue<Node> queueStart = new LinkedList<>();
-        Queue<Node> queueGoal = new LinkedList<>();
+        HashSet<Node> aEndNodes = new HashSet<Node>(List.of(new Node(a)));
+        HashSet<Node> bEndNodes = new HashSet<Node>(List.of(new Node(b)));
 
-        HashSet<String> seenA = new HashSet<>();
-        HashSet<String> seenB = new HashSet<>();
+        HashSet<String> seenANames = new HashSet<String>();
+        HashSet<String> seenBNames = new HashSet<String>();
 
-        queueStart.add(new Node(a, new ArrayList<>(List.of(b))));
-        queueGoal.add(new Node(b, new ArrayList<>(List.of(a))));
+        List<String> found;
 
-        Node found;
-
-        while (!queueStart.isEmpty() && !queueGoal.isEmpty()) {
-            found = extend(queueStart, seenA, seenB);
+        while (!aEndNodes.isEmpty() && !bEndNodes.isEmpty()) {
+            found = expand(aEndNodes, bEndNodes, seenANames,seenBNames);
 
             if (found != null) {
-                return deduceRoute(found, queueStart, b);
+                return found;
             }
 
-            found = extend(queueGoal, seenB, seenA);
+            found = expand(bEndNodes, aEndNodes, seenBNames, seenANames);
 
             if (found != null) {
-                return deduceRoute(found, queueGoal, a);
+                return found;
             }
         }
+
 
         return null;
     }
