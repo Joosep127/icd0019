@@ -41,22 +41,30 @@ public class ConnectionFinder {
             HashSet<String> seenBNames,
             String name,
             Node mainNode) {
-        if (!seenANames.contains(name)) {
-            if (seenBNames.contains(name)) {
-                Node meetingNodeFromB = null;
-                for (Node bNode : bEndNodes) {
-                    if (bNode.name.equals(name)) {
-                        meetingNodeFromB = bNode;
-                        break;
-                    }
-                }
-                assert meetingNodeFromB != null;
+
+        if (seenANames.contains(name)) {
+            return List.of();
+        }
+
+        if (seenBNames.contains(name)) {
+            Node meetingNodeFromB = findNodeByName(bEndNodes, name);
+            if (meetingNodeFromB != null) {
                 return buildPath(mainNode, meetingNodeFromB);
             }
-            newAEndNodes.add(new Node(name, mainNode));
-            seenANames.add(name);
         }
+
+        newAEndNodes.add(new Node(name, mainNode));
+        seenANames.add(name);
         return List.of();
+    }
+
+    private Node findNodeByName(HashSet<Node> nodes, String name) {
+        for (Node node : nodes) {
+            if (node.name.equals(name)) {
+                return node;
+            }
+        }
+        return null;
     }
 
     private List<String> expand(
@@ -84,7 +92,7 @@ public class ConnectionFinder {
 
     public List<String> findConnection(String a, String b) {
         if (!connections.containsKey(a) || !connections.containsKey(b)) {
-            return null;
+            return List.of();
         }
 
         if (a.equals(b)) {
