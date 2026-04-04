@@ -44,7 +44,42 @@ public class ConnectionFinder {
         return connection != null;
     }
 
-    public List<String> expand(
+    private List<String> buildPath(Node a, Node b) {
+        List<String> pathA = a.history();
+        List<String> pathB = b.history();
+
+        Collections.reverse(pathB);
+
+        pathB.addAll(pathA);
+        return pathB;
+    }
+
+    private List<String> checkName(
+            HashSet<Node> newAEndNodes,
+            HashSet<Node> bEndNodes,
+            HashSet<String> seenANames,
+            HashSet<String> seenBNames,
+            String name,
+            Node mainNode) {
+        if (!seenANames.contains(name)) {
+            if (seenBNames.contains(name)) {
+                Node meetingNodeFromB = null;
+                for (Node bNode : bEndNodes) {
+                    if (bNode.name.equals(name)) {
+                        meetingNodeFromB = bNode;
+                        break;
+                    }
+                }
+                assert meetingNodeFromB != null;
+                return buildPath(mainNode, meetingNodeFromB);
+            }
+            newAEndNodes.add(new Node(name, mainNode));
+            seenANames.add(name);
+        }
+        return null;
+    }
+
+    private List<String> expand(
             HashSet<Node> aEndNodes,
             HashSet<Node> bEndNodes,
             HashSet<String> seenANames,
@@ -54,25 +89,9 @@ public class ConnectionFinder {
 
         for (Node n : aEndNodes) {
             for (String name : connections.get(n.name)) {
-                if (!seenANames.contains(name)) {
-                    if (seenBNames.contains(name)) {
-                        Node meetingNodeFromB = null;
-                        for (Node bNode : bEndNodes) {
-                            if (bNode.name.equals(name)) {
-                                meetingNodeFromB = bNode;
-                                break;
-                            }
-                        }
-                        List<String> pathA = n.history();
-                        List<String> pathB = meetingNodeFromB.history();
-
-                        Collections.reverse(pathB);
-
-                        pathB.addAll(pathA);
-                        return pathB;
-                    }
-                    newAEndNodes.add(new Node(name, n));
-                    seenANames.add(name);
+                List<String> out = checkName(newAEndNodes, bEndNodes, seenANames, seenBNames, name, n);
+                if (out != null) {
+                    return out;
                 }
             }
         }
