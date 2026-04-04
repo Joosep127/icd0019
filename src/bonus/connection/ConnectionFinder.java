@@ -21,27 +21,7 @@ public class ConnectionFinder {
     }
 
     public boolean hasConnection(String a, String b) {
-        if (!connections.containsKey(a) || !connections.containsKey(b)) {
-            return false;
-        }
-
-        Set<String> minList;
-        String maxItem;
-
-        if (connections.get(a).size() < connections.get(b).size()) {
-            minList = connections.get(a);
-            maxItem = b;
-        } else {
-            minList = connections.get(b);
-            maxItem = a;
-        }
-
-        if (minList.contains(maxItem)) {
-            return true;
-        }
-
-        List<String> connection = findConnection(a, b);
-        return connection != null;
+        return !findConnection(a, b).isEmpty();
     }
 
     private List<String> buildPath(Node a, Node b) {
@@ -76,7 +56,7 @@ public class ConnectionFinder {
             newAEndNodes.add(new Node(name, mainNode));
             seenANames.add(name);
         }
-        return null;
+        return List.of();
     }
 
     private List<String> expand(
@@ -90,7 +70,7 @@ public class ConnectionFinder {
         for (Node n : aEndNodes) {
             for (String name : connections.get(n.name)) {
                 List<String> out = checkName(newAEndNodes, bEndNodes, seenANames, seenBNames, name, n);
-                if (out != null) {
+                if (!out.isEmpty()) {
                     return out;
                 }
             }
@@ -99,7 +79,7 @@ public class ConnectionFinder {
         aEndNodes.clear();
         aEndNodes.addAll(newAEndNodes);
 
-        return null;
+        return List.of();
     }
 
     public List<String> findConnection(String a, String b) {
@@ -122,18 +102,18 @@ public class ConnectionFinder {
         while (!aEndNodes.isEmpty() && !bEndNodes.isEmpty()) {
             found = expand(aEndNodes, bEndNodes, seenANames,seenBNames);
 
-            if (found != null) {
+            if (!found.isEmpty()) {
                 return found;
             }
 
             found = expand(bEndNodes, aEndNodes, seenBNames, seenANames);
 
-            if (found != null) {
+            if (!found.isEmpty()) {
                 return found;
             }
         }
 
 
-        return null;
+        return List.of();
     }
 }
