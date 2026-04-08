@@ -13,7 +13,7 @@ public class Numbers {
     public void findsOddNumbers() {
 
         List<Integer> oddNumbers = numbers.stream()
-                // add filter here
+                .filter(x -> x%2 == 1)
                 .toList();
 
         System.out.println(oddNumbers);
@@ -22,16 +22,31 @@ public class Numbers {
     @Test
     public void findsOddNumbersOver10() {
 
+        List<Integer> oddNumbers = numbers.stream()
+                .filter(x -> x%2 == 1 && x > 10)
+                .toList();
+
+        System.out.println(oddNumbers);
     }
 
     @Test
     public void findsSquaredOddNumbers() {
 
+        List<Integer> oddNumbers = numbers.stream()
+                .filter(x -> x%2 == 1)
+                .map(x -> x*x)
+                .toList();
+
+        System.out.println(oddNumbers);
     }
 
     @Test
     public void findsSumOfOddNumbers() {
+        Integer oddNumbers = numbers.stream()
+                .filter(x -> x%2 == 1)
+                .reduce(0, Integer::sum);
 
+        System.out.println(oddNumbers);
     }
 
 }

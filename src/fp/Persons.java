@@ -14,22 +14,28 @@ public class Persons {
 
     @Test
     public void findsPersonById() {
-
+        Integer id = 1;
+        System.out.println(persons.stream().filter(x -> x.id().equals(id)).toList());
     }
 
     @Test
     public void removePersonById() {
-
+        Integer id = 1;
+        System.out.println(persons.stream().filter(x -> x.id().equals(id)).toList());
     }
 
     @Test
     public void findsPersonNames() {
-
+        String name = "Alice";
+        System.out.println(persons.stream().filter(p -> p.name().equals(name)).toList());
     }
 
     @Test
     public void reverseSortedByAge() {
-
+        System.out.println(persons
+                .stream()
+                .sorted((a,b) -> Integer.compare(a.age(), b.age()))
+                .toList());
     }
 
 }
