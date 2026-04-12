@@ -24,7 +24,7 @@ public final class RegularCustomer extends AbstractCustomer {
         lastOrderDate = order.date();
         LocalDate oneMonthAgo = LocalDate.now().minusMonths(1);
         if (order.total() >= 100) {
-            if (lastOrderDate.isAfter(oneMonthAgo)) {
+            if (!lastOrderDate.isBefore(oneMonthAgo)) {
                 this.bonusPoints += (int) (order.total() * 1.5);
             } else {
                 this.bonusPoints += (int) order.total();
