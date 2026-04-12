@@ -67,7 +67,7 @@ public class CustomerRepository {
             inputFile.delete();
             tempFile.renameTo(inputFile);
         } catch (IOException e) {
-            return;
+            System.out.println("gei");
         }
     }
 
