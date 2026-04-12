@@ -3,6 +3,7 @@ package poly.customer;
 import namespace.A;
 
 import java.io.*;
+import java.security.cert.TrustAnchor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -47,19 +48,21 @@ public class CustomerRepository {
             BufferedReader reader = new BufferedReader(new FileReader(inputFile));
             BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
             String line;
+            boolean hasLine = false;
 
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(";");
 
+                if (hasLine) {
+                    writer.newLine();
+                }
+                hasLine = true;
 
                 if (parts.length >= 3 && parts[1].equals(customer.id)) {
                     writer.write(customer.asString());
                 } else {
                     writer.write(line);
                 }
-
-                writer.newLine();
-
             }
 
             reader.close();
@@ -77,7 +80,9 @@ public class CustomerRepository {
                 new FileWriter(FILE_PATH, true)
         );
 
-        writer.newLine();
+        if (new File(FILE_PATH).length() > 0) {
+            writer.newLine();
+        }
         writer.write(customer.toString());
 
         writer.close();
@@ -91,16 +96,18 @@ public class CustomerRepository {
             BufferedReader reader = new BufferedReader(new FileReader(inputFile));
             BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
             String line;
+            boolean hasLine = false;
 
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(";");
 
+                if (hasLine) {
+                    writer.newLine();
+                }
+
                 if (parts.length >= 3 && !parts[1].equals(id)) {
                     writer.write(line);
                 }
-
-                writer.newLine();
-
             }
 
             reader.close();
