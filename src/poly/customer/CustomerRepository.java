@@ -104,6 +104,7 @@ public class CustomerRepository {
                 if (hasLine) {
                     writer.newLine();
                 }
+                hasLine = true;
 
                 if (parts.length >= 3 && !parts[1].equals(id)) {
                     writer.write(line);
