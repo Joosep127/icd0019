@@ -51,7 +51,8 @@ public class CustomerRepository {
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(";");
 
-                if (parts[1].equals(customer.id)) {
+
+                if (parts.length >= 3 && parts[1].equals(customer.id)) {
                     writer.write(customer.asString());
                 } else {
                     writer.write(line);
