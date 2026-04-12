@@ -35,9 +35,6 @@ public class CustomerRepository {
         }
         return Optional.empty();
     }
-    public void remove(String id) {
-        return;
-    }
 
     public void save(AbstractCustomer customer) {
         try {
