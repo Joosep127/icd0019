@@ -21,8 +21,7 @@ public final class RegularCustomer extends AbstractCustomer {
 
     @Override
     public void collectBonusPointsFrom(Order order) {
-        lastOrderDate = order.date();
-        LocalDate oneMonthAgo = LocalDate.now().minusMonths(1);
+        LocalDate oneMonthAgo = order.date();
         if (order.total() >= 100) {
             if (!lastOrderDate.isBefore(oneMonthAgo)) {
                 this.bonusPoints += (int) (order.total() * 1.5);
@@ -30,6 +29,7 @@ public final class RegularCustomer extends AbstractCustomer {
                 this.bonusPoints += (int) order.total();
             }
         }
+        lastOrderDate = order.date();
     }
 
     @Override
