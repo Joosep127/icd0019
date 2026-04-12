@@ -82,6 +82,37 @@ public class CustomerRepository {
         writer.close();
     }
 
+    public void remove(String id) {
+        try {
+            File inputFile = new File(FILE_PATH);
+            File tempFile = new File("temp.txt");
+
+            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(";");
+
+                if (!parts[1].equals(id)) {
+                    writer.write(line);
+                }
+
+                writer.newLine();
+
+            }
+
+            reader.close();
+            writer.close();
+
+            inputFile.delete();
+            tempFile.renameTo(inputFile);
+        } catch (IOException e) {
+            System.out.println("gei");
+        }
+
+    }
+
     public int getCustomerCount() {
         try {
             BufferedReader bf = new BufferedReader(new FileReader(FILE_PATH));
