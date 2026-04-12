@@ -8,5 +8,4 @@ public record Entry(int rowNo,
                     String state,
                     String category,
                     Double amount) {
-
 }

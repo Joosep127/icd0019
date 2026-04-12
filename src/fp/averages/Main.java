@@ -12,7 +12,10 @@ public class Main {
     public static void main(String[] args) throws IOException {
         List<List<Integer>> rows = getData();
 
-        // find average of all the numbers
+        System.out.println(rows.stream()
+                .flatMapToInt(list -> list.stream().mapToInt(Integer::intValue))
+                .average()
+                .orElse(0));
 
     }
 

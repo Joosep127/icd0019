@@ -14,6 +14,12 @@ public class AnalyserTests {
     private final Analyser analyser = new Analyser(new Repository(), accountingService);
 
     @Test
+    public void myTest() {
+        Repository repo = new Repository();
+        System.out.println(repo.getEntries().get(5).state());
+    }
+
+    @Test
     public void findsTotalSales() {
         assertThat(analyser.getTotalSales())
                 .isCloseTo(201374.12, within(0.01));
