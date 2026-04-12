@@ -20,7 +20,7 @@ public class CustomerRepository {
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(";");
 
-                if (parts[1].equals(id)) {
+                if (parts.length >= 3 && parts[1].equals(id)) {
                     if (parts[0].equals("GOLD")) {
                         return Optional.of(new GoldCustomer(parts));
                     }
