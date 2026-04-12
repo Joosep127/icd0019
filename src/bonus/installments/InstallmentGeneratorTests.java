@@ -1,0 +1,72 @@
+package bonus.installments;
+
+import org.junit.jupiter.api.Test;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class InstallmentGeneratorTests {
+
+    @Test
+    public void isSumIsLargeEnoughThenGeneratesInstallmentsForWholePeriod() {
+        String actual = generateInstallments(90, "2025-04-04", "2025-06-07");
+        String expected = "[30, 2025-04-04], [30, 2025-05-01], [30, 2025-06-01]";
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    public void whenPeriodIsTooLongThereAreNoZeroSumPayments() {
+        String actual = generateInstallments(6, "2025-04-04", "2025-06-07");
+        String expected = "[3, 2025-04-04], [3, 2025-05-01]";
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    public void remainderIsDividedBetweenLastInstallments() {
+        String actual = generateInstallments(11, "2025-04-04", "2025-06-07");
+        String expected = "[3, 2025-04-04], [4, 2025-05-01], [4, 2025-06-01]";
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    public void amountIsLessThanMinimumGivesJustOneInstallment() {
+        String actual = generateInstallments(2, "2025-04-04", "2025-06-07");
+        String expected = "[2, 2025-04-04]";
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    private String generateInstallments(int amount, String start, String end) {
+        InstallmentGenerator generator = new InstallmentGenerator();
+
+        List<Installment> rows = generator.generateRowsFor(
+                amount, asDate(start), asDate(end));
+
+        return stringify(rows);
+    }
+
+    private String stringify(List<Installment> rows) {
+        return rows.stream()
+                .map(this::formatInstallment)
+                .collect(Collectors.joining(", "));
+    }
+
+    private String formatInstallment(Installment installment) {
+        return String.format("[%s, %s]",
+                installment.amount(),
+                installment.date().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+
+    }
+
+    public static LocalDate asDate(String date) {
+        return LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    }
+
+}
