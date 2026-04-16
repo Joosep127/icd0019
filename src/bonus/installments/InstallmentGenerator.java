@@ -33,7 +33,7 @@ public class InstallmentGenerator {
             abovePay = normalPay + 1;
 
             aboveMonths = amount%months;
-            belowMonths = (months-aboveMonths)-1;
+            belowMonths = months-aboveMonths-1;
         }
 
         List<Installment> output = new ArrayList<Installment>();
