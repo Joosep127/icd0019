@@ -20,9 +20,16 @@ public class Serializer {
         List<String> pairs = new ArrayList<>();
         for (Field field : fields) {
             try {
+                if (!field.isAnnotationPresent(Stored.class)) {
+                    continue;
+                }
                 field.setAccessible(true);
 
-                String key = field.getName();
+                Stored stored = field.getAnnotation(Stored.class);
+
+                String key = (stored == null || stored.value().isEmpty())
+                        ? field.getName()
+                        : stored.value();
                 Object value = field.get(instance);
 
                 pairs.add("%s:%s".formatted(key, correctValue(String.valueOf(value))));
